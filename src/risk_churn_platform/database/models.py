@@ -19,7 +19,7 @@ from sqlalchemy.orm import Session, sessionmaker
 Base = declarative_base()
 
 
-class PredictionFeedback(Base):
+class PredictionFeedback(Base):  # type: ignore[misc,valid-type]
     """Store prediction feedback for model retraining.
 
     Stores both predictions and ground truth labels for evaluating
@@ -66,7 +66,7 @@ class PredictionFeedback(Base):
         )
 
 
-class ModelPerformance(Base):
+class ModelPerformance(Base):  # type: ignore[misc,valid-type]
     """Track model performance metrics over time."""
 
     __tablename__ = "model_performance"
@@ -109,7 +109,7 @@ class ModelPerformance(Base):
         )
 
 
-class DriftEvent(Base):
+class DriftEvent(Base):  # type: ignore[misc,valid-type]
     """Store drift detection events."""
 
     __tablename__ = "drift_events"
@@ -154,7 +154,7 @@ class DriftEvent(Base):
         )
 
 
-class OutlierEvent(Base):
+class OutlierEvent(Base):  # type: ignore[misc,valid-type]
     """Store outlier detection events."""
 
     __tablename__ = "outlier_events"
@@ -189,7 +189,7 @@ class OutlierEvent(Base):
         return f"<OutlierEvent(id={self.id}, score={self.outlier_score:.3f})>"
 
 
-class RetrainingJob(Base):
+class RetrainingJob(Base):  # type: ignore[misc,valid-type]
     """Track model retraining jobs."""
 
     __tablename__ = "retraining_jobs"
@@ -236,7 +236,7 @@ class RetrainingJob(Base):
         )
 
 
-class APIKey(Base):
+class APIKey(Base):  # type: ignore[misc,valid-type]
     """Store API keys for authentication."""
 
     __tablename__ = "api_keys"

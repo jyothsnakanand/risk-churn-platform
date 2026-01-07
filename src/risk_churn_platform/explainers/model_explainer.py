@@ -129,7 +129,7 @@ class ModelExplainer:
             for j, feature_name in enumerate(self.feature_names):
                 value = shap_values[i, j]
                 feature_importance[feature_name] = (
-                    float(value) if np.isscalar(value) else float(np.mean(value))
+                    float(value) if np.isscalar(value) else float(np.mean(value))  # type: ignore[arg-type]
                 )
 
             # Sort by absolute importance

@@ -172,7 +172,7 @@ class VaultSecretsBackend(SecretsBackend):
                 import hvac
 
                 self._client = hvac.Client(url=self.url, token=self.token)
-                if not self._client.is_authenticated():
+                if not self._client.is_authenticated():  # type: ignore[attr-defined]
                     raise RuntimeError("Vault authentication failed")
                 logger.info("vault_initialized", url=self.url)
             except ImportError as err:

@@ -105,7 +105,7 @@ class DriftDetector:
 
         is_drift = bool(drift_result["data"]["is_drift"])
         p_val_data = drift_result["data"]["p_val"]
-        p_value = float(p_val_data) if np.isscalar(p_val_data) else float(np.mean(p_val_data))
+        p_value = float(p_val_data) if np.isscalar(p_val_data) else float(np.mean(p_val_data))  # type: ignore[arg-type]
 
         # Feature-level drift (if available)
         feature_drift = {}

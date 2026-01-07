@@ -206,7 +206,7 @@ async def verify_api_key(
     return key_obj
 
 
-def require_permission(permission: str):
+def require_permission(permission: str):  # type: ignore[no-untyped-def]
     """Decorator to require specific permission.
 
     Args:

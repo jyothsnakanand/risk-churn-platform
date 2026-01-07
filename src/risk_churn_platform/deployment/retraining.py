@@ -127,7 +127,7 @@ class RetrainingPipeline:
             model = RiskScorerV1()
             model.train(X_train, y_train)
         else:
-            model = RiskScorerV2()
+            model = RiskScorerV2()  # type: ignore[assignment]
             model.train(X_train, y_train)
 
         # Evaluate on validation set

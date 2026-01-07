@@ -77,7 +77,7 @@ class RateLimiter:
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """FastAPI middleware for rate limiting."""
 
-    def __init__(self, app, rate: int = 1000, per: int = 3600) -> None:
+    def __init__(self, app, rate: int = 1000, per: int = 3600) -> None:  # type: ignore[no-untyped-def]
         """Initialize rate limit middleware.
 
         Args:

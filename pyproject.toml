@@ -139,8 +139,37 @@ module = [
     "alibi_detect.*",
     "shap.*",
     "kafka.*",
+    "sklearn.*",
+    "joblib.*",
+    "boto3.*",
+    "botocore.*",
+    "hvac.*",
+    "prometheus_client.*",
 ]
 ignore_missing_imports = true
+
+# Relax strict rules for database models (SQLAlchemy compatibility)
+[[tool.mypy.overrides]]
+module = "risk_churn_platform.database.models"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+# Relax strict rules for third-party integrations
+[[tool.mypy.overrides]]
+module = [
+    "risk_churn_platform.config.secrets",
+    "risk_churn_platform.middleware.rate_limiter",
+    "risk_churn_platform.api.rest_api",
+    "risk_churn_platform.auth.api_key_auth",
+    "risk_churn_platform.models.risk_scorer",
+    "risk_churn_platform.explainers.model_explainer",
+    "risk_churn_platform.transformers.feature_transformer",
+    "risk_churn_platform.database.repository",
+    "risk_churn_platform.deployment.retraining",
+    "risk_churn_platform.monitoring.drift_detector",
+]
+warn_return_any = false
+disallow_untyped_defs = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

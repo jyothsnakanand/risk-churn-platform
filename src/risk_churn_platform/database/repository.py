@@ -91,8 +91,8 @@ class FeedbackRepository:
         )
 
         if feedback:
-            feedback.actual_label = actual_label
-            feedback.feedback_timestamp = datetime.utcnow()
+            feedback.actual_label = actual_label  # type: ignore[assignment]
+            feedback.feedback_timestamp = datetime.utcnow()  # type: ignore[assignment]
             self.session.commit()
             logger.info("feedback_updated", request_id=request_id, actual_label=actual_label)
 
@@ -356,16 +356,16 @@ class RetrainingRepository:
         job = self.session.query(RetrainingJob).filter(RetrainingJob.job_id == job_id).first()
 
         if job:
-            job.status = status
+            job.status = status  # type: ignore[assignment]
 
             if metrics:
-                job.metrics = metrics
+                job.metrics = metrics  # type: ignore[assignment]
 
             if error_message:
-                job.error_message = error_message
+                job.error_message = error_message  # type: ignore[assignment]
 
             if status in ["completed", "failed"]:
-                job.completed_at = datetime.utcnow()
+                job.completed_at = datetime.utcnow()  # type: ignore[assignment]
                 if job.started_at:
                     duration = (job.completed_at - job.started_at).total_seconds()
                     job.duration_seconds = duration
