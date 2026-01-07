@@ -1,0 +1,87 @@
+apiVersion: machinelearning.seldon.io/v1
+kind: SeldonDeployment
+metadata:
+  name: risk-churn-scorer-canary
+  namespace: ml-platform
+spec:
+  name: risk-churn-scorer
+  predictors:
+  # Primary predictor (v1) - 90% traffic
+  - name: primary
+    replicas: 3
+    traffic: 90
+    componentSpecs:
+    - spec:
+        containers:
+        - name: transformer
+          image: risk-churn-platform/transformer:latest
+          imagePullPolicy: Always
+          env:
+          - name: MODEL_VERSION
+            value: "v1"
+
+        - name: model-v1
+          image: risk-churn-platform/model:v1
+          imagePullPolicy: Always
+          env:
+          - name: MODEL_PATH
+            value: "/models/v1/model.pkl"
+          volumeMounts:
+          - name: model-storage
+            mountPath: /models
+
+        volumes:
+        - name: model-storage
+          persistentVolumeClaim:
+            claimName: model-pvc
+
+    graph:
+      name: transformer
+      type: TRANSFORMER
+      endpoint:
+        type: REST
+      children:
+      - name: model-v1
+        type: MODEL
+        endpoint:
+          type: REST
+
+  # Canary predictor (v2) - 10% traffic
+  - name: canary
+    replicas: 1
+    traffic: 10
+    componentSpecs:
+    - spec:
+        containers:
+        - name: transformer
+          image: risk-churn-platform/transformer:latest
+          imagePullPolicy: Always
+          env:
+          - name: MODEL_VERSION
+            value: "v2"
+
+        - name: model-v2
+          image: risk-churn-platform/model:v2
+          imagePullPolicy: Always
+          env:
+          - name: MODEL_PATH
+            value: "/models/v2/model.pkl"
+          volumeMounts:
+          - name: model-storage
+            mountPath: /models
+
+        volumes:
+        - name: model-storage
+          persistentVolumeClaim:
+            claimName: model-pvc
+
+    graph:
+      name: transformer
+      type: TRANSFORMER
+      endpoint:
+        type: REST
+      children:
+      - name: model-v2
+        type: MODEL
+        endpoint:
+          type: REST

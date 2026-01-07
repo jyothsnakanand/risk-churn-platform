@@ -1,0 +1,92 @@
+app:
+  name: "risk-churn-platform"
+  version: "0.1.0"
+  environment: "development"
+
+api:
+  host: "0.0.0.0"
+  port: 8080
+  grpc_port: 9000
+  workers: 4
+
+models:
+  v1:
+    name: "risk-scorer-v1"
+    path: "models/v1/model.pkl"
+    type: "sklearn"
+  v2:
+    name: "risk-scorer-v2"
+    path: "models/v2/model.pkl"
+    type: "sklearn"
+
+router:
+  strategy: "shadow"  # Options: shadow, canary, blue-green
+  canary_weight: 0.1  # 10% traffic to v2 during canary
+  shadow_log_predictions: true
+
+transformer:
+  enabled: true
+  features:
+    - "customer_tenure"
+    - "monthly_charges"
+    - "total_charges"
+    - "contract_type"
+    - "payment_method"
+    - "internet_service"
+    - "support_tickets"
+    - "login_frequency"
+
+explainer:
+  enabled: true
+  type: "shap"  # Options: shap, alibi
+  num_samples: 100
+
+monitoring:
+  drift_detection:
+    enabled: true
+    method: "ks"  # Kolmogorov-Smirnov test
+    threshold: 0.05
+    window_size: 1000
+    reference_window_size: 5000
+
+  outlier_detection:
+    enabled: true
+    method: "isolation_forest"
+    threshold: 0.1
+    contamination: 0.1
+
+  metrics:
+    enabled: true
+    port: 9090
+    path: "/metrics"
+
+kafka:
+  enabled: true
+  bootstrap_servers:
+    - "localhost:9092"
+  topics:
+    predictions: "ml.predictions"
+    drift_alerts: "ml.drift-alerts"
+    outliers: "ml.outliers"
+    feedback: "ml.feedback"
+  consumer_group: "risk-churn-platform"
+  auto_offset_reset: "earliest"
+
+retraining:
+  enabled: true
+  schedule: "0 2 * * 0"  # Weekly at 2 AM on Sunday
+  min_samples: 10000
+  performance_threshold: 0.85
+  auto_deploy: false
+
+storage:
+  redis:
+    host: "localhost"
+    port: 6379
+    db: 0
+    ttl: 3600
+
+logging:
+  level: "INFO"
+  format: "json"
+  structured: true
