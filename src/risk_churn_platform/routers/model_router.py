@@ -3,7 +3,7 @@
 import random
 import time
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any
 
 import numpy as np
 import structlog
@@ -51,11 +51,11 @@ class ModelRouter:
         # Metrics
         self.v1_requests = 0
         self.v2_requests = 0
-        self.shadow_comparisons: List[Dict[str, Any]] = []
+        self.shadow_comparisons: list[dict[str, Any]] = []
 
     def route(
         self, features: NDArray[np.float64], request_id: str | None = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Route prediction request based on configured strategy.
 
         Args:
@@ -76,7 +76,7 @@ class ModelRouter:
 
     def _blue_green_route(
         self, features: NDArray[np.float64], request_id: str | None = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Blue-green deployment: all traffic to one version.
 
         Args:
@@ -104,7 +104,7 @@ class ModelRouter:
 
     def _canary_route(
         self, features: NDArray[np.float64], request_id: str | None = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Canary deployment: percentage-based traffic splitting.
 
         Args:
@@ -147,7 +147,7 @@ class ModelRouter:
 
     def _shadow_route(
         self, features: NDArray[np.float64], request_id: str | None = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Shadow deployment: v1 serves traffic, v2 runs in parallel.
 
         Args:
@@ -202,7 +202,7 @@ class ModelRouter:
             "request_id": request_id,
         }
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get routing metrics.
 
         Returns:
@@ -223,7 +223,7 @@ class ModelRouter:
             "shadow_comparisons_count": len(self.shadow_comparisons),
         }
 
-    def get_shadow_analysis(self) -> Dict[str, Any]:
+    def get_shadow_analysis(self) -> dict[str, Any]:
         """Analyze shadow deployment results.
 
         Returns:

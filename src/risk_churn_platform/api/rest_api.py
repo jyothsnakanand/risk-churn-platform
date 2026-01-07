@@ -1,7 +1,7 @@
 """REST API for risk/churn scoring platform."""
 
 import uuid
-from typing import Any, Dict, List
+from typing import Any
 
 import structlog
 from fastapi import FastAPI, HTTPException, status
@@ -62,7 +62,7 @@ class PredictionResponse(BaseModel):
     """Prediction response schema."""
 
     request_id: str
-    predictions: List[float]
+    predictions: list[float]
     model_version: str
     strategy: str
     latency_ms: float
@@ -75,7 +75,7 @@ class HealthResponse(BaseModel):
 
     status: str
     version: str
-    models: Dict[str, bool]
+    models: dict[str, bool]
 
 
 def create_app(
@@ -204,7 +204,7 @@ def create_app(
             )
 
     @app.post("/explain")
-    async def explain_prediction(request: PredictionRequest) -> Dict[str, Any]:
+    async def explain_prediction(request: PredictionRequest) -> dict[str, Any]:
         """Explain a prediction.
 
         Args:
@@ -239,7 +239,7 @@ def create_app(
             )
 
     @app.get("/router/metrics")
-    async def get_router_metrics() -> Dict[str, Any]:
+    async def get_router_metrics() -> dict[str, Any]:
         """Get routing metrics.
 
         Returns:
@@ -248,7 +248,7 @@ def create_app(
         return model_router.get_metrics()
 
     @app.get("/router/shadow-analysis")
-    async def get_shadow_analysis() -> Dict[str, Any]:
+    async def get_shadow_analysis() -> dict[str, Any]:
         """Get shadow deployment analysis.
 
         Returns:
@@ -257,7 +257,7 @@ def create_app(
         return model_router.get_shadow_analysis()
 
     @app.post("/router/promote-v2")
-    async def promote_v2() -> Dict[str, str]:
+    async def promote_v2() -> dict[str, str]:
         """Promote v2 to production.
 
         Returns:
@@ -268,7 +268,7 @@ def create_app(
         return {"message": "v2 promoted to production"}
 
     @app.post("/router/rollback")
-    async def rollback_to_v1() -> Dict[str, str]:
+    async def rollback_to_v1() -> dict[str, str]:
         """Rollback to v1.
 
         Returns:
@@ -320,7 +320,7 @@ def _initialize_app() -> FastAPI:
     if transformer_path.exists():
         import pickle
         with open(transformer_path, 'rb') as f:
-            transformer = pickle.load(f)
+            transformer = pickle.load(f)  # nosec B301
         logger.info("loaded_transformer", path=str(transformer_path))
     else:
         # Create new transformer (won't be fitted)

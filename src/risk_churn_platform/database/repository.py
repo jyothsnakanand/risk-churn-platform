@@ -1,7 +1,7 @@
 """Database repository for feedback and metrics."""
 
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from typing import Optional
 
 import pandas as pd
 import structlog
@@ -33,14 +33,14 @@ class FeedbackRepository:
     def store_prediction(
         self,
         request_id: str,
-        features: Dict,
+        features: dict,
         predicted_probability: float,
         predicted_label: int,
         risk_score: float,
         model_version: str,
         routing_strategy: str,
         latency_ms: Optional[float] = None,
-        metadata: Optional[Dict] = None,
+        metadata: Optional[dict] = None,
     ) -> PredictionFeedback:
         """Store a prediction.
 
@@ -159,7 +159,7 @@ class FeedbackRepository:
         model_version: str,
         start_time: datetime,
         end_time: datetime,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Calculate prediction accuracy for a time period.
 
         Args:
@@ -212,7 +212,7 @@ class MonitoringRepository:
         drift_method: str,
         p_value: Optional[float] = None,
         severity: str = "warning",
-        affected_features: Optional[List[str]] = None,
+        affected_features: Optional[list[str]] = None,
     ) -> DriftEvent:
         """Store a drift detection event.
 
@@ -249,7 +249,7 @@ class MonitoringRepository:
         is_outlier: bool,
         outlier_score: float,
         outlier_method: str,
-        features: Dict,
+        features: dict,
         severity: str = "info",
     ) -> OutlierEvent:
         """Store an outlier detection event.
@@ -284,7 +284,7 @@ class MonitoringRepository:
 
     def get_recent_drift_events(
         self, days: int = 7, drift_detected_only: bool = True
-    ) -> List[DriftEvent]:
+    ) -> list[DriftEvent]:
         """Get recent drift events.
 
         Args:
@@ -347,7 +347,7 @@ class RetrainingRepository:
         self,
         job_id: str,
         status: str,
-        metrics: Optional[Dict] = None,
+        metrics: Optional[dict] = None,
         error_message: Optional[str] = None,
     ) -> Optional[RetrainingJob]:
         """Update retraining job status.
@@ -387,7 +387,7 @@ class RetrainingRepository:
 
         return job
 
-    def get_recent_jobs(self, limit: int = 10) -> List[RetrainingJob]:
+    def get_recent_jobs(self, limit: int = 10) -> list[RetrainingJob]:
         """Get recent retraining jobs.
 
         Args:

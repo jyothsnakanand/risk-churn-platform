@@ -3,7 +3,7 @@
 import hashlib
 import secrets
 from datetime import datetime, timedelta
-from typing import Dict, Optional
+from typing import Optional
 
 import structlog
 from fastapi import HTTPException, Security, status
@@ -34,7 +34,7 @@ class APIKeyManager:
 
     def __init__(self) -> None:
         """Initialize API key manager."""
-        self.keys: Dict[str, APIKey] = {}
+        self.keys: dict[str, APIKey] = {}
         self._load_keys()
 
     def _load_keys(self) -> None:
@@ -141,7 +141,7 @@ class APIKeyManager:
                 return True
         return False
 
-    def list_keys(self) -> list[Dict]:
+    def list_keys(self) -> list[dict]:
         """List all API keys (without the actual key).
 
         Returns:

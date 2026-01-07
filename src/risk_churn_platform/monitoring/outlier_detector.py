@@ -1,7 +1,7 @@
 """Outlier detection using Alibi Detect."""
 
 import time
-from typing import Any, Dict, List
+from typing import Any
 
 import numpy as np
 import structlog
@@ -31,7 +31,7 @@ class OutlierDetector:
         self.threshold = threshold
         self.contamination = contamination
         self.detector: Any = None
-        self.outlier_history: List[Dict[str, Any]] = []
+        self.outlier_history: list[dict[str, Any]] = []
 
     def fit(self, X_train: NDArray[np.float64]) -> None:
         """Fit outlier detector on training data.
@@ -54,7 +54,7 @@ class OutlierDetector:
         else:
             raise ValueError(f"Unknown outlier detection method: {self.method}")
 
-    def detect(self, X: NDArray[np.float64]) -> Dict[str, Any]:
+    def detect(self, X: NDArray[np.float64]) -> dict[str, Any]:
         """Detect outliers in new data.
 
         Args:
@@ -103,7 +103,7 @@ class OutlierDetector:
 
         return result
 
-    def get_outlier_summary(self) -> Dict[str, Any]:
+    def get_outlier_summary(self) -> dict[str, Any]:
         """Get summary of outlier detection history.
 
         Returns:

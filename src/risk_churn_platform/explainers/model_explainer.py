@@ -1,6 +1,6 @@
 """Model explainability using SHAP and Alibi."""
 
-from typing import Any, Dict, List
+from typing import Any
 
 import numpy as np
 import shap
@@ -20,7 +20,7 @@ class ModelExplainer:
         self,
         model: BaseModel,
         method: str = "shap",
-        feature_names: List[str] | None = None,
+        feature_names: list[str] | None = None,
     ) -> None:
         """Initialize the explainer.
 
@@ -37,7 +37,7 @@ class ModelExplainer:
     def fit(
         self,
         X_background: NDArray[np.float64],
-        categorical_features: List[int] | None = None,
+        categorical_features: list[int] | None = None,
     ) -> None:
         """Initialize the explainer with background data.
 
@@ -70,7 +70,7 @@ class ModelExplainer:
             )
 
     def _init_anchor_explainer(
-        self, X_background: NDArray[np.float64], categorical_features: List[int]
+        self, X_background: NDArray[np.float64], categorical_features: list[int]
     ) -> None:
         """Initialize Anchor explainer.
 
@@ -92,7 +92,7 @@ class ModelExplainer:
 
     def explain(
         self, X: NDArray[np.float64], threshold: float = 0.95
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Generate explanation for predictions.
 
         Args:
@@ -112,7 +112,7 @@ class ModelExplainer:
         else:
             raise ValueError(f"Unknown explanation method: {self.method}")
 
-    def _explain_shap(self, X: NDArray[np.float64]) -> Dict[str, Any]:
+    def _explain_shap(self, X: NDArray[np.float64]) -> dict[str, Any]:
         """Generate SHAP explanations.
 
         Args:
@@ -155,7 +155,7 @@ class ModelExplainer:
 
     def _explain_anchor(
         self, X: NDArray[np.float64], threshold: float
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Generate Anchor explanations.
 
         Args:
@@ -205,8 +205,8 @@ class SeldonExplainer:
         return True
 
     def explain(
-        self, X: NDArray[np.float64], feature_names: List[str] | None = None
-    ) -> Dict[str, Any]:
+        self, X: NDArray[np.float64], feature_names: list[str] | None = None
+    ) -> dict[str, Any]:
         """Generate explanations.
 
         Args:
@@ -218,7 +218,7 @@ class SeldonExplainer:
         """
         return self.explainer.explain(X)
 
-    def health_status(self) -> Dict[str, bool]:
+    def health_status(self) -> dict[str, bool]:
         """Return health status.
 
         Returns:

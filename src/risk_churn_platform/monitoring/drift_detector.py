@@ -1,7 +1,7 @@
 """Data drift detection using Alibi Detect."""
 
 import time
-from typing import Any, Dict, List
+from typing import Any
 
 import numpy as np
 import structlog
@@ -19,7 +19,7 @@ class DriftDetector:
         method: str = "ks",
         threshold: float = 0.05,
         window_size: int = 1000,
-        feature_names: List[str] | None = None,
+        feature_names: list[str] | None = None,
     ) -> None:
         """Initialize drift detector.
 
@@ -35,8 +35,8 @@ class DriftDetector:
         self.feature_names = feature_names or []
         self.detector: Any = None
         self.reference_data: NDArray[np.float64] | None = None
-        self.drift_history: List[Dict[str, Any]] = []
-        self.current_window: List[NDArray[np.float64]] = []
+        self.drift_history: list[dict[str, Any]] = []
+        self.current_window: list[NDArray[np.float64]] = []
 
     def fit(self, X_reference: NDArray[np.float64]) -> None:
         """Fit drift detector on reference data.
@@ -72,7 +72,7 @@ class DriftDetector:
         else:
             raise ValueError(f"Unknown drift detection method: {self.method}")
 
-    def detect(self, X: NDArray[np.float64]) -> Dict[str, Any]:
+    def detect(self, X: NDArray[np.float64]) -> dict[str, Any]:
         """Detect drift in new data.
 
         Args:
@@ -141,7 +141,7 @@ class DriftDetector:
 
         return result
 
-    def get_drift_summary(self) -> Dict[str, Any]:
+    def get_drift_summary(self) -> dict[str, Any]:
         """Get summary of drift detection history.
 
         Returns:

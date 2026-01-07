@@ -2,7 +2,7 @@
 
 import os
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 import joblib
 import numpy as np
@@ -39,7 +39,7 @@ class RetrainingPipeline:
         self.performance_threshold = performance_threshold
         self.auto_deploy = auto_deploy
         self.model_save_path = model_save_path
-        self.training_history: list[Dict[str, Any]] = []
+        self.training_history: list[dict[str, Any]] = []
 
     def should_retrain(self, feedback_data: pd.DataFrame) -> bool:
         """Determine if model should be retrained.
@@ -108,7 +108,7 @@ class RetrainingPipeline:
         X_val: NDArray[np.float64],
         y_val: NDArray[np.int_],
         model_version: str = "v2",
-    ) -> tuple[Any, Dict[str, float]]:
+    ) -> tuple[Any, dict[str, float]]:
         """Train a new model.
 
         Args:
@@ -147,7 +147,7 @@ class RetrainingPipeline:
 
         return model, metrics
 
-    def evaluate_deployment_readiness(self, metrics: Dict[str, float]) -> bool:
+    def evaluate_deployment_readiness(self, metrics: dict[str, float]) -> bool:
         """Determine if model is ready for deployment.
 
         Args:
@@ -169,7 +169,7 @@ class RetrainingPipeline:
         return meets_threshold
 
     def save_model(
-        self, model: Any, version: str, metrics: Dict[str, float]
+        self, model: Any, version: str, metrics: dict[str, float]
     ) -> str:
         """Save trained model to disk.
 
@@ -202,7 +202,7 @@ class RetrainingPipeline:
 
     def run_retraining(
         self, feedback_data: pd.DataFrame, model_version: str = "v2"
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Run the full retraining pipeline.
 
         Args:
@@ -255,7 +255,7 @@ class RetrainingPipeline:
 
         return result
 
-    def get_training_history(self) -> list[Dict[str, Any]]:
+    def get_training_history(self) -> list[dict[str, Any]]:
         """Get retraining history.
 
         Returns:

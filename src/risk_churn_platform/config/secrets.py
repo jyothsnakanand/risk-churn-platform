@@ -10,7 +10,7 @@ Supports multiple backends:
 import json
 import os
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 import structlog
 
@@ -33,7 +33,7 @@ class SecretsBackend(ABC):
         pass
 
     @abstractmethod
-    def get_secret_dict(self, key: str) -> Optional[Dict[str, Any]]:
+    def get_secret_dict(self, key: str) -> Optional[dict[str, Any]]:
         """Get a secret as dictionary (for JSON secrets).
 
         Args:
@@ -62,7 +62,7 @@ class EnvironmentSecretsBackend(SecretsBackend):
             logger.debug("secret_loaded_from_env", key=key)
         return value
 
-    def get_secret_dict(self, key: str) -> Optional[Dict[str, Any]]:
+    def get_secret_dict(self, key: str) -> Optional[dict[str, Any]]:
         """Get secret as dictionary from environment.
 
         Args:
@@ -123,7 +123,7 @@ class AWSSecretsBackend(SecretsBackend):
             logger.error("aws_secret_fetch_failed", key=key, error=str(e))
             return None
 
-    def get_secret_dict(self, key: str) -> Optional[Dict[str, Any]]:
+    def get_secret_dict(self, key: str) -> Optional[dict[str, Any]]:
         """Get secret as dictionary from AWS.
 
         Args:
@@ -201,7 +201,7 @@ class VaultSecretsBackend(SecretsBackend):
             logger.error("vault_secret_fetch_failed", key=key, error=str(e))
             return None
 
-    def get_secret_dict(self, key: str) -> Optional[Dict[str, Any]]:
+    def get_secret_dict(self, key: str) -> Optional[dict[str, Any]]:
         """Get secret as dictionary from Vault.
 
         Args:
@@ -283,7 +283,7 @@ class SecretsManager:
 
         return value or default
 
-    def get_dict(self, key: str, default: Optional[Dict] = None) -> Optional[Dict[str, Any]]:
+    def get_dict(self, key: str, default: Optional[dict] = None) -> Optional[dict[str, Any]]:
         """Get a secret as dictionary.
 
         Args:

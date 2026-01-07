@@ -1,6 +1,6 @@
 """Feature transformation pipeline for risk/churn scoring."""
 
-from typing import Any, Dict, List
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -11,7 +11,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 class FeatureTransformer:
     """Transform raw input data into model-ready features."""
 
-    def __init__(self, feature_names: List[str]) -> None:
+    def __init__(self, feature_names: list[str]) -> None:
         """Initialize the feature transformer.
 
         Args:
@@ -19,7 +19,7 @@ class FeatureTransformer:
         """
         self.feature_names = feature_names
         self.scaler = StandardScaler()
-        self.label_encoders: Dict[str, LabelEncoder] = {}
+        self.label_encoders: dict[str, LabelEncoder] = {}
         self.categorical_features = ["favorite_category", "payment_method", "shipping_method"]
         self.numerical_features = [
             "customer_age_days",
@@ -70,7 +70,7 @@ class FeatureTransformer:
         self.fitted = True
         return self
 
-    def transform(self, X: pd.DataFrame | Dict[str, Any]) -> NDArray[np.float64]:
+    def transform(self, X: pd.DataFrame | dict[str, Any]) -> NDArray[np.float64]:
         """Transform input data into model-ready features.
 
         Args:
@@ -160,7 +160,7 @@ class SeldonTransformer:
         return True
 
     def transform_input(
-        self, X: NDArray[np.float64], feature_names: List[str] | None = None
+        self, X: NDArray[np.float64], feature_names: list[str] | None = None
     ) -> NDArray[np.float64]:
         """Transform input data.
 
@@ -177,7 +177,7 @@ class SeldonTransformer:
             return self.transformer.transform(df)
         return X
 
-    def health_status(self) -> Dict[str, bool]:
+    def health_status(self) -> dict[str, bool]:
         """Return health status.
 
         Returns:

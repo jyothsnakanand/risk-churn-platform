@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any
 
 import structlog
 
@@ -28,11 +28,11 @@ class Alert:
     alert_type: str
     severity: AlertSeverity
     message: str
-    details: Dict[str, Any]
+    details: dict[str, Any]
     timestamp: datetime
     source: str
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert alert to dictionary.
 
         Returns:
@@ -118,8 +118,8 @@ class AlertManager:
 
     def __init__(self) -> None:
         """Initialize alert manager."""
-        self.handlers: List[AlertHandler] = []
-        self.alert_history: List[Alert] = []
+        self.handlers: list[AlertHandler] = []
+        self.alert_history: list[Alert] = []
         self.max_history_size = 1000
 
     def add_handler(self, handler: AlertHandler) -> None:
@@ -136,7 +136,7 @@ class AlertManager:
         alert_type: str,
         severity: AlertSeverity,
         message: str,
-        details: Dict[str, Any] | None = None,
+        details: dict[str, Any] | None = None,
         source: str = "risk-churn-platform",
     ) -> None:
         """Create and send an alert.
@@ -175,7 +175,7 @@ class AlertManager:
 
     def get_recent_alerts(
         self, limit: int = 100, severity: AlertSeverity | None = None
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Get recent alerts.
 
         Args:

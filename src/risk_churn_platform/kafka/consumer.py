@@ -1,7 +1,7 @@
 """Kafka consumer for feedback and retraining pipeline."""
 
 import json
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 import structlog
 from kafka import KafkaConsumer
@@ -52,7 +52,7 @@ class FeedbackConsumer:
 
     def consume(
         self,
-        callback: Callable[[Dict[str, Any]], None],
+        callback: Callable[[dict[str, Any]], None],
         max_messages: int | None = None,
     ) -> None:
         """Consume messages and process with callback.
@@ -116,7 +116,7 @@ class PredictionConsumer:
             auto_offset_reset: Where to start reading messages
         """
         self.topic = topic
-        self.predictions_buffer: list[Dict[str, Any]] = []
+        self.predictions_buffer: list[dict[str, Any]] = []
         self.buffer_size = 1000
 
         try:
@@ -137,7 +137,7 @@ class PredictionConsumer:
             logger.error("prediction_consumer_init_failed", error=str(e))
             raise
 
-    def collect_predictions(self, max_messages: int = 1000) -> list[Dict[str, Any]]:
+    def collect_predictions(self, max_messages: int = 1000) -> list[dict[str, Any]]:
         """Collect predictions for offline evaluation.
 
         Args:

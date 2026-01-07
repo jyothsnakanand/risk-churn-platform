@@ -1,7 +1,7 @@
 """Base model interface for risk/churn scoring."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -54,7 +54,7 @@ class BaseModel(ABC):
         """
         pass
 
-    def get_metadata(self) -> Dict[str, Any]:
+    def get_metadata(self) -> dict[str, Any]:
         """Get model metadata.
 
         Returns:
@@ -95,7 +95,7 @@ class SeldonModel:
             return False
 
     def predict(
-        self, X: NDArray[np.float64], features_names: List[str] | None = None
+        self, X: NDArray[np.float64], features_names: list[str] | None = None
     ) -> NDArray[np.float64]:
         """Make predictions on input data.
 
@@ -108,7 +108,7 @@ class SeldonModel:
         """
         return self.model.predict_proba(X)
 
-    def init_metadata(self) -> Dict[str, Any]:
+    def init_metadata(self) -> dict[str, Any]:
         """Return model metadata.
 
         Returns:
@@ -116,7 +116,7 @@ class SeldonModel:
         """
         return self.model.get_metadata()
 
-    def health_status(self) -> Dict[str, bool]:
+    def health_status(self) -> dict[str, bool]:
         """Return health status.
 
         Returns:

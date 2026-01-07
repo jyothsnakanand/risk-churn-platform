@@ -1,7 +1,7 @@
 """Kafka producer for async request mirroring."""
 
 import json
-from typing import Any, Dict
+from typing import Any
 
 import structlog
 from kafka import KafkaProducer
@@ -49,10 +49,10 @@ class PredictionProducer:
     def send_prediction(
         self,
         request_id: str,
-        features: Dict[str, Any],
+        features: dict[str, Any],
         predictions: list[float],
         model_version: str,
-        metadata: Dict[str, Any] | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         """Send prediction event to Kafka.
 
@@ -87,7 +87,7 @@ class PredictionProducer:
 
     def send_drift_alert(
         self,
-        drift_result: Dict[str, Any],
+        drift_result: dict[str, Any],
         severity: str = "warning",
     ) -> None:
         """Send drift detection alert to Kafka.
@@ -112,7 +112,7 @@ class PredictionProducer:
 
     def send_outlier_event(
         self,
-        outlier_result: Dict[str, Any],
+        outlier_result: dict[str, Any],
         severity: str = "info",
     ) -> None:
         """Send outlier detection event to Kafka.
