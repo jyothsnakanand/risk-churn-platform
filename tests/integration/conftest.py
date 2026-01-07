@@ -42,7 +42,7 @@ if is_kafka_mocked():
     # Create mock kafka.errors module
     kafka_errors_mock = MagicMock()
     kafka_errors_mock.KafkaError = Exception
-    kafka_errors_mock.NoBrokersAvailable = type('NoBrokersAvailable', (Exception,), {})
+    kafka_errors_mock.NoBrokersAvailable = type("NoBrokersAvailable", (Exception,), {})
 
     # Create mock aiokafka module
     aiokafka_mock = MagicMock()
@@ -50,10 +50,10 @@ if is_kafka_mocked():
     aiokafka_mock.AIOKafkaConsumer = MagicMock(return_value=mock_consumer)
 
     # Inject mocks into sys.modules
-    sys.modules['kafka'] = kafka_mock
-    sys.modules['kafka.admin'] = kafka_admin_mock
-    sys.modules['kafka.errors'] = kafka_errors_mock
-    sys.modules['aiokafka'] = aiokafka_mock
+    sys.modules["kafka"] = kafka_mock
+    sys.modules["kafka.admin"] = kafka_admin_mock
+    sys.modules["kafka.errors"] = kafka_errors_mock
+    sys.modules["aiokafka"] = aiokafka_mock
 
 
 def pytest_configure(config):

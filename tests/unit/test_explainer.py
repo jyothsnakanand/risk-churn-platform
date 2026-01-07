@@ -51,11 +51,7 @@ def test_data() -> NDArray[np.float64]:
 def test_explainer_initialization(trained_model: RiskScorerV1) -> None:
     """Test explainer initialization."""
     feature_names = [f"feature_{i}" for i in range(8)]
-    explainer = ModelExplainer(
-        model=trained_model,
-        method="shap",
-        feature_names=feature_names
-    )
+    explainer = ModelExplainer(model=trained_model, method="shap", feature_names=feature_names)
 
     assert explainer.model == trained_model
     assert explainer.method == "shap"
@@ -76,15 +72,11 @@ def test_explainer_fit_shap(
 def test_explainer_explain_shap(
     trained_model: RiskScorerV1,
     background_data: NDArray[np.float64],
-    test_data: NDArray[np.float64]
+    test_data: NDArray[np.float64],
 ) -> None:
     """Test generating SHAP explanations."""
     feature_names = [f"feature_{i}" for i in range(8)]
-    explainer = ModelExplainer(
-        model=trained_model,
-        method="shap",
-        feature_names=feature_names
-    )
+    explainer = ModelExplainer(model=trained_model, method="shap", feature_names=feature_names)
     explainer.fit(background_data)
 
     explanations = explainer.explain(test_data)
@@ -123,11 +115,7 @@ def test_explainer_anchor_initialization(
 ) -> None:
     """Test Anchor explainer initialization."""
     feature_names = [f"feature_{i}" for i in range(8)]
-    explainer = ModelExplainer(
-        model=trained_model,
-        method="anchor",
-        feature_names=feature_names
-    )
+    explainer = ModelExplainer(model=trained_model, method="anchor", feature_names=feature_names)
 
     # Anchor requires categorical features list
     categorical_features = [3, 4, 5]  # Indices of categorical features
@@ -136,12 +124,12 @@ def test_explainer_anchor_initialization(
     assert explainer.explainer is not None
 
 
-@patch('risk_churn_platform.explainers.model_explainer.AnchorTabular')
+@patch("risk_churn_platform.explainers.model_explainer.AnchorTabular")
 def test_explainer_explain_anchor(
     mock_anchor: MagicMock,
     trained_model: RiskScorerV1,
     background_data: NDArray[np.float64],
-    test_data: NDArray[np.float64]
+    test_data: NDArray[np.float64],
 ) -> None:
     """Test generating Anchor explanations."""
     # Mock the Anchor explainer
@@ -156,11 +144,7 @@ def test_explainer_explain_anchor(
     mock_instance.explain.return_value = mock_explanation
 
     feature_names = [f"feature_{i}" for i in range(8)]
-    explainer = ModelExplainer(
-        model=trained_model,
-        method="anchor",
-        feature_names=feature_names
-    )
+    explainer = ModelExplainer(model=trained_model, method="anchor", feature_names=feature_names)
     explainer.fit(background_data, categorical_features=[])
 
     explanations = explainer.explain(test_data[:1], threshold=0.95)
@@ -199,10 +183,7 @@ def test_seldon_explainer_load() -> None:
 def test_seldon_explainer_explain() -> None:
     """Test Seldon explainer explain method."""
     mock_explainer = MagicMock(spec=ModelExplainer)
-    mock_explainer.explain.return_value = {
-        "method": "shap",
-        "explanations": []
-    }
+    mock_explainer.explain.return_value = {"method": "shap", "explanations": []}
 
     seldon_explainer = SeldonExplainer(explainer=mock_explainer)
     seldon_explainer.load()

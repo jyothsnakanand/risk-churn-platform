@@ -99,6 +99,7 @@ class AWSSecretsBackend(SecretsBackend):
         if self._client is None:
             try:
                 import boto3
+
                 self._client = boto3.client("secretsmanager", region_name=self.region)
                 logger.info("aws_secrets_manager_initialized", region=self.region)
             except ImportError as err:
@@ -149,7 +150,7 @@ class VaultSecretsBackend(SecretsBackend):
         self,
         url: str = "http://localhost:8200",
         token: str | None = None,
-        mount_point: str = "secret"
+        mount_point: str = "secret",
     ) -> None:
         """Initialize Vault backend.
 
@@ -169,6 +170,7 @@ class VaultSecretsBackend(SecretsBackend):
         if self._client is None:
             try:
                 import hvac
+
                 self._client = hvac.Client(url=self.url, token=self.token)
                 if not self._client.is_authenticated():
                     raise RuntimeError("Vault authentication failed")
@@ -223,11 +225,7 @@ class VaultSecretsBackend(SecretsBackend):
 class SecretsManager:
     """Unified secrets manager with multiple backends."""
 
-    def __init__(
-        self,
-        backend: SecretsBackend | None = None,
-        fallback_to_env: bool = True
-    ) -> None:
+    def __init__(self, backend: SecretsBackend | None = None, fallback_to_env: bool = True) -> None:
         """Initialize secrets manager.
 
         Args:

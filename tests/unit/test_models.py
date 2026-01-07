@@ -21,7 +21,7 @@ def sample_data() -> tuple[NDArray[np.float64], NDArray[np.int_]]:
 
 
 def test_risk_scorer_v1_train_predict(
-    sample_data: tuple[NDArray[np.float64], NDArray[np.int_]]
+    sample_data: tuple[NDArray[np.float64], NDArray[np.int_]],
 ) -> None:
     """Test RiskScorerV1 training and prediction."""
     X, y = sample_data
@@ -42,7 +42,7 @@ def test_risk_scorer_v1_train_predict(
 
 
 def test_risk_scorer_v2_train_predict(
-    sample_data: tuple[NDArray[np.float64], NDArray[np.int_]]
+    sample_data: tuple[NDArray[np.float64], NDArray[np.int_]],
 ) -> None:
     """Test RiskScorerV2 training and prediction."""
     X, y = sample_data

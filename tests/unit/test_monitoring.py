@@ -52,9 +52,9 @@ def drifted_data() -> NDArray[np.float64]:
 
 def test_drift_detector_initialization() -> None:
     """Test drift detector initialization."""
-    detector = DriftDetector(method='ks', threshold=0.05, window_size=100)
+    detector = DriftDetector(method="ks", threshold=0.05, window_size=100)
 
-    assert detector.method == 'ks'
+    assert detector.method == "ks"
     assert detector.threshold == 0.05
     assert detector.window_size == 100
     assert detector.detector is None
@@ -63,7 +63,7 @@ def test_drift_detector_initialization() -> None:
 
 def test_drift_detector_fit(reference_data: NDArray[np.float64]) -> None:
     """Test fitting drift detector."""
-    detector = DriftDetector(method='ks', threshold=0.05)
+    detector = DriftDetector(method="ks", threshold=0.05)
     detector.fit(reference_data)
 
     assert detector.detector is not None
@@ -74,20 +74,20 @@ def test_drift_detector_no_drift(
     reference_data: NDArray[np.float64], test_data: NDArray[np.float64]
 ) -> None:
     """Test drift detection with no drift."""
-    detector = DriftDetector(method='ks', threshold=0.05, window_size=100)
+    detector = DriftDetector(method="ks", threshold=0.05, window_size=100)
     detector.fit(reference_data)
 
     result = detector.detect(test_data)
 
-    assert 'is_drift' in result
-    assert 'window_filled' in result or 'p_value' in result
+    assert "is_drift" in result
+    assert "window_filled" in result or "p_value" in result
 
 
 def test_drift_detector_window_filling(
     reference_data: NDArray[np.float64], test_data: NDArray[np.float64]
 ) -> None:
     """Test drift detector window filling."""
-    detector = DriftDetector(method='ks', threshold=0.05, window_size=1000)
+    detector = DriftDetector(method="ks", threshold=0.05, window_size=1000)
     detector.fit(reference_data)
 
     # Send small batch
@@ -95,22 +95,22 @@ def test_drift_detector_window_filling(
     result = detector.detect(small_batch)
 
     # Should indicate window is still filling
-    assert 'window_filled' in result
+    assert "window_filled" in result
 
 
 def test_drift_detector_summary(reference_data: NDArray[np.float64]) -> None:
     """Test drift summary with no data."""
-    detector = DriftDetector(method='ks')
+    detector = DriftDetector(method="ks")
     detector.fit(reference_data)
 
     summary = detector.get_drift_summary()
 
-    assert summary['status'] == 'no_data'
+    assert summary["status"] == "no_data"
 
 
 def test_drift_detector_reset_window(reference_data: NDArray[np.float64]) -> None:
     """Test resetting drift detector window."""
-    detector = DriftDetector(method='ks', window_size=100)
+    detector = DriftDetector(method="ks", window_size=100)
     detector.fit(reference_data)
 
     # Add some data
@@ -127,13 +127,9 @@ def test_drift_detector_reset_window(reference_data: NDArray[np.float64]) -> Non
 
 def test_outlier_detector_initialization() -> None:
     """Test outlier detector initialization."""
-    detector = OutlierDetector(
-        method='isolation_forest',
-        threshold=0.1,
-        contamination=0.1
-    )
+    detector = OutlierDetector(method="isolation_forest", threshold=0.1, contamination=0.1)
 
-    assert detector.method == 'isolation_forest'
+    assert detector.method == "isolation_forest"
     assert detector.threshold == 0.1
     assert detector.contamination == 0.1
     assert detector.detector is None
@@ -141,7 +137,7 @@ def test_outlier_detector_initialization() -> None:
 
 def test_outlier_detector_fit(reference_data: NDArray[np.float64]) -> None:
     """Test fitting outlier detector."""
-    detector = OutlierDetector(method='isolation_forest')
+    detector = OutlierDetector(method="isolation_forest")
     detector.fit(reference_data)
 
     assert detector.detector is not None
@@ -151,34 +147,34 @@ def test_outlier_detector_detect(
     reference_data: NDArray[np.float64], test_data: NDArray[np.float64]
 ) -> None:
     """Test outlier detection."""
-    detector = OutlierDetector(method='isolation_forest', contamination=0.1)
+    detector = OutlierDetector(method="isolation_forest", contamination=0.1)
     detector.fit(reference_data)
 
     result = detector.detect(test_data)
 
-    assert 'num_samples' in result
-    assert 'num_outliers' in result
-    assert 'outlier_rate' in result
-    assert 'is_outlier' in result
-    assert 'outlier_scores' in result
-    assert result['num_samples'] == len(test_data)
+    assert "num_samples" in result
+    assert "num_outliers" in result
+    assert "outlier_rate" in result
+    assert "is_outlier" in result
+    assert "outlier_scores" in result
+    assert result["num_samples"] == len(test_data)
 
 
 def test_outlier_detector_summary(reference_data: NDArray[np.float64]) -> None:
     """Test outlier summary with no data."""
-    detector = OutlierDetector(method='isolation_forest')
+    detector = OutlierDetector(method="isolation_forest")
     detector.fit(reference_data)
 
     summary = detector.get_outlier_summary()
 
-    assert summary['status'] == 'no_data'
+    assert summary["status"] == "no_data"
 
 
 def test_outlier_detector_with_data(
     reference_data: NDArray[np.float64], test_data: NDArray[np.float64]
 ) -> None:
     """Test outlier detection and summary."""
-    detector = OutlierDetector(method='isolation_forest')
+    detector = OutlierDetector(method="isolation_forest")
     detector.fit(reference_data)
 
     # Detect outliers
@@ -187,10 +183,10 @@ def test_outlier_detector_with_data(
     # Get summary
     summary = detector.get_outlier_summary()
 
-    assert 'total_samples' in summary
-    assert 'total_outliers' in summary
-    assert 'overall_outlier_rate' in summary
-    assert summary['total_samples'] == len(test_data)
+    assert "total_samples" in summary
+    assert "total_outliers" in summary
+    assert "overall_outlier_rate" in summary
+    assert summary["total_samples"] == len(test_data)
 
 
 # Alerting Tests
@@ -201,17 +197,17 @@ def test_alert_creation() -> None:
     from datetime import datetime
 
     alert = Alert(
-        alert_type='drift_detected',
+        alert_type="drift_detected",
         severity=AlertSeverity.WARNING,
-        message='Drift detected in feature X',
-        details={'p_value': 0.01},
+        message="Drift detected in feature X",
+        details={"p_value": 0.01},
         timestamp=datetime.now(),
-        source='test'
+        source="test",
     )
 
-    assert alert.alert_type == 'drift_detected'
+    assert alert.alert_type == "drift_detected"
     assert alert.severity == AlertSeverity.WARNING
-    assert alert.message == 'Drift detected in feature X'
+    assert alert.message == "Drift detected in feature X"
 
 
 def test_alert_to_dict() -> None:
@@ -219,19 +215,19 @@ def test_alert_to_dict() -> None:
     from datetime import datetime
 
     alert = Alert(
-        alert_type='test',
+        alert_type="test",
         severity=AlertSeverity.INFO,
-        message='Test message',
+        message="Test message",
         details={},
         timestamp=datetime.now(),
-        source='test'
+        source="test",
     )
 
     alert_dict = alert.to_dict()
 
-    assert alert_dict['alert_type'] == 'test'
-    assert alert_dict['severity'] == 'info'
-    assert 'timestamp' in alert_dict
+    assert alert_dict["alert_type"] == "test"
+    assert alert_dict["severity"] == "info"
+    assert "timestamp" in alert_dict
 
 
 def test_log_alert_handler() -> None:
@@ -240,12 +236,12 @@ def test_log_alert_handler() -> None:
 
     handler = LogAlertHandler()
     alert = Alert(
-        alert_type='test',
+        alert_type="test",
         severity=AlertSeverity.INFO,
-        message='Test alert',
+        message="Test alert",
         details={},
         timestamp=datetime.now(),
-        source='test'
+        source="test",
     )
 
     # Should not raise
@@ -269,14 +265,14 @@ def test_alert_manager_send_alert() -> None:
     manager.add_handler(LogAlertHandler())
 
     manager.send_alert(
-        alert_type='test',
+        alert_type="test",
         severity=AlertSeverity.INFO,
-        message='Test message',
-        details={'key': 'value'}
+        message="Test message",
+        details={"key": "value"},
     )
 
     assert len(manager.alert_history) == 1
-    assert manager.alert_history[0].alert_type == 'test'
+    assert manager.alert_history[0].alert_type == "test"
 
 
 def test_alert_manager_get_recent_alerts() -> None:
@@ -286,9 +282,7 @@ def test_alert_manager_get_recent_alerts() -> None:
     # Send several alerts
     for i in range(5):
         manager.send_alert(
-            alert_type=f'test_{i}',
-            severity=AlertSeverity.INFO,
-            message=f'Test message {i}'
+            alert_type=f"test_{i}", severity=AlertSeverity.INFO, message=f"Test message {i}"
         )
 
     recent = manager.get_recent_alerts(limit=3)
@@ -302,17 +296,11 @@ def test_alert_manager_filter_by_severity() -> None:
 
     # Send different severity alerts
     manager.send_alert(
-        alert_type='warning_alert',
-        severity=AlertSeverity.WARNING,
-        message='Warning'
+        alert_type="warning_alert", severity=AlertSeverity.WARNING, message="Warning"
     )
-    manager.send_alert(
-        alert_type='info_alert',
-        severity=AlertSeverity.INFO,
-        message='Info'
-    )
+    manager.send_alert(alert_type="info_alert", severity=AlertSeverity.INFO, message="Info")
 
     warnings = manager.get_recent_alerts(severity=AlertSeverity.WARNING)
 
     assert len(warnings) == 1
-    assert warnings[0]['alert_type'] == 'warning_alert'
+    assert warnings[0]["alert_type"] == "warning_alert"

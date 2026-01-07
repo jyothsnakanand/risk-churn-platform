@@ -65,9 +65,7 @@ class ModelExplainer:
             self.explainer = shap.TreeExplainer(self.model.model)
         except Exception:
             # Fallback to KernelExplainer for non-tree models
-            self.explainer = shap.KernelExplainer(
-                self.model.predict_proba, X_background
-            )
+            self.explainer = shap.KernelExplainer(self.model.predict_proba, X_background)
 
     def _init_anchor_explainer(
         self, X_background: NDArray[np.float64], categorical_features: list[int]
@@ -90,9 +88,7 @@ class ModelExplainer:
         )
         self.explainer.fit(X_background, categorical_features=categorical_features)
 
-    def explain(
-        self, X: NDArray[np.float64], threshold: float = 0.95
-    ) -> dict[str, Any]:
+    def explain(self, X: NDArray[np.float64], threshold: float = 0.95) -> dict[str, Any]:
         """Generate explanation for predictions.
 
         Args:
@@ -132,7 +128,9 @@ class ModelExplainer:
             feature_importance = {}
             for j, feature_name in enumerate(self.feature_names):
                 value = shap_values[i, j]
-                feature_importance[feature_name] = float(value) if np.isscalar(value) else float(np.mean(value))
+                feature_importance[feature_name] = (
+                    float(value) if np.isscalar(value) else float(np.mean(value))
+                )
 
             # Sort by absolute importance
             sorted_features = sorted(
@@ -153,9 +151,7 @@ class ModelExplainer:
             "explanations": explanations,
         }
 
-    def _explain_anchor(
-        self, X: NDArray[np.float64], threshold: float
-    ) -> dict[str, Any]:
+    def _explain_anchor(self, X: NDArray[np.float64], threshold: float) -> dict[str, Any]:
         """Generate Anchor explanations.
 
         Args:

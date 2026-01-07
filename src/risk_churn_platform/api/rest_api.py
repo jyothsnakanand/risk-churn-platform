@@ -167,9 +167,7 @@ def create_app(
                 )
 
             # Record metrics
-            PREDICTION_COUNTER.labels(
-                model_version=result["model_version"], status="success"
-            ).inc()
+            PREDICTION_COUNTER.labels(model_version=result["model_version"], status="success").inc()
             PREDICTION_LATENCY.labels(model_version=result["model_version"]).observe(
                 result["latency_ms"] / 1000
             )
@@ -301,23 +299,38 @@ def _initialize_app() -> FastAPI:
         config = {
             "transformer": {
                 "features": [
-                    "customer_age_days", "account_age_days", "total_orders",
-                    "total_revenue", "avg_order_value", "days_since_last_order",
-                    "order_frequency", "website_visits_30d", "email_open_rate",
-                    "cart_abandonment_rate", "product_views_30d", "support_tickets_total",
-                    "support_tickets_open", "returns_count", "refunds_count",
-                    "favorite_category", "discount_usage_rate", "premium_product_rate",
-                    "payment_method", "shipping_method", "failed_payment_count",
+                    "customer_age_days",
+                    "account_age_days",
+                    "total_orders",
+                    "total_revenue",
+                    "avg_order_value",
+                    "days_since_last_order",
+                    "order_frequency",
+                    "website_visits_30d",
+                    "email_open_rate",
+                    "cart_abandonment_rate",
+                    "product_views_30d",
+                    "support_tickets_total",
+                    "support_tickets_open",
+                    "returns_count",
+                    "refunds_count",
+                    "favorite_category",
+                    "discount_usage_rate",
+                    "premium_product_rate",
+                    "payment_method",
+                    "shipping_method",
+                    "failed_payment_count",
                 ]
             },
-            "router": {"strategy": "shadow"}
+            "router": {"strategy": "shadow"},
         }
 
     # Initialize and load transformer
     transformer_path = Path("models/transformer.pkl")
     if transformer_path.exists():
         import pickle
-        with open(transformer_path, 'rb') as f:
+
+        with open(transformer_path, "rb") as f:
             transformer = pickle.load(f)  # nosec B301
         logger.info("loaded_transformer", path=str(transformer_path))
     else:
@@ -345,19 +358,16 @@ def _initialize_app() -> FastAPI:
     strategy_map = {
         "shadow": RoutingStrategy.SHADOW,
         "canary": RoutingStrategy.CANARY,
-        "blue-green": RoutingStrategy.BLUE_GREEN
+        "blue-green": RoutingStrategy.BLUE_GREEN,
     }
     model_router = ModelRouter(
         model_v1=model_v1,
         model_v2=model_v2,
-        strategy=strategy_map.get(strategy_str, RoutingStrategy.SHADOW)
+        strategy=strategy_map.get(strategy_str, RoutingStrategy.SHADOW),
     )
 
     return create_app(
-        model_router=model_router,
-        transformer=transformer,
-        explainer=None,
-        kafka_producer=None
+        model_router=model_router, transformer=transformer, explainer=None, kafka_producer=None
     )
 
 

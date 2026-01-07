@@ -167,9 +167,7 @@ class RetrainingPipeline:
 
         return meets_threshold
 
-    def save_model(
-        self, model: Any, version: str, metrics: dict[str, float]
-    ) -> str:
+    def save_model(self, model: Any, version: str, metrics: dict[str, float]) -> str:
         """Save trained model to disk.
 
         Args:

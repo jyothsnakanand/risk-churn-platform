@@ -46,10 +46,7 @@ def kafka_admin(kafka_bootstrap_servers: list[str]) -> KafkaAdminClient:
     """
     # If Kafka is mocked, the KafkaAdminClient will be mocked automatically
     # by the conftest.py session fixture
-    admin = KafkaAdminClient(
-        bootstrap_servers=kafka_bootstrap_servers,
-        client_id="test-admin"
-    )
+    admin = KafkaAdminClient(bootstrap_servers=kafka_bootstrap_servers, client_id="test-admin")
     yield admin
     admin.close()
 
@@ -68,7 +65,7 @@ def test_topics(kafka_admin: KafkaAdminClient) -> dict[str, str]:
         "predictions": "test.predictions",
         "feedback": "test.feedback",
         "drift": "test.drift",
-        "outliers": "test.outliers"
+        "outliers": "test.outliers",
     }
 
     # If Kafka is mocked, skip topic creation
@@ -78,8 +75,7 @@ def test_topics(kafka_admin: KafkaAdminClient) -> dict[str, str]:
 
     # Create topics
     topic_list = [
-        NewTopic(name=name, num_partitions=1, replication_factor=1)
-        for name in topics.values()
+        NewTopic(name=name, num_partitions=1, replication_factor=1) for name in topics.values()
     ]
 
     try:
@@ -111,8 +107,7 @@ def test_producer_send_prediction(
     """
     # Create producer
     producer = PredictionProducer(
-        bootstrap_servers=kafka_bootstrap_servers,
-        predictions_topic=test_topics["predictions"]
+        bootstrap_servers=kafka_bootstrap_servers, predictions_topic=test_topics["predictions"]
     )
 
     # Send prediction
@@ -121,7 +116,7 @@ def test_producer_send_prediction(
         features={"feature1": 1.0, "feature2": 2.0},
         predictions=[0.3, 0.7],
         model_version="v1",
-        metadata={"strategy": "shadow"}
+        metadata={"strategy": "shadow"},
     )
 
     # Flush to ensure delivery
@@ -136,9 +131,9 @@ def test_producer_send_prediction(
     consumer = KafkaConsumer(
         test_topics["predictions"],
         bootstrap_servers=kafka_bootstrap_servers,
-        auto_offset_reset='earliest',
+        auto_offset_reset="earliest",
         consumer_timeout_ms=5000,
-        value_deserializer=lambda m: json.loads(m.decode('utf-8'))
+        value_deserializer=lambda m: json.loads(m.decode("utf-8")),
     )
 
     # Read message
@@ -168,15 +163,10 @@ def test_producer_send_drift_alert(
         test_topics: Test topic names
     """
     producer = PredictionProducer(
-        bootstrap_servers=kafka_bootstrap_servers,
-        drift_alerts_topic=test_topics["drift"]
+        bootstrap_servers=kafka_bootstrap_servers, drift_alerts_topic=test_topics["drift"]
     )
 
-    drift_result = {
-        "is_drift": True,
-        "p_value": 0.01,
-        "feature": "total_revenue"
-    }
+    drift_result = {"is_drift": True, "p_value": 0.01, "feature": "total_revenue"}
 
     producer.send_drift_alert(drift_result, severity="warning")
     producer.flush()
@@ -189,9 +179,9 @@ def test_producer_send_drift_alert(
     consumer = KafkaConsumer(
         test_topics["drift"],
         bootstrap_servers=kafka_bootstrap_servers,
-        auto_offset_reset='earliest',
+        auto_offset_reset="earliest",
         consumer_timeout_ms=5000,
-        value_deserializer=lambda m: json.loads(m.decode('utf-8'))
+        value_deserializer=lambda m: json.loads(m.decode("utf-8")),
     )
 
     messages = list(consumer)
@@ -207,9 +197,7 @@ def test_producer_send_drift_alert(
 
 @pytest.mark.integration
 @pytest.mark.kafka
-def test_feedback_consumer(
-    kafka_bootstrap_servers: list[str], test_topics: dict[str, str]
-) -> None:
+def test_feedback_consumer(kafka_bootstrap_servers: list[str], test_topics: dict[str, str]) -> None:
     """Test consuming feedback messages.
 
     Args:
@@ -221,7 +209,7 @@ def test_feedback_consumer(
         consumer = FeedbackConsumer(
             bootstrap_servers=kafka_bootstrap_servers,
             topic=test_topics["feedback"],
-            group_id="test-feedback-group"
+            group_id="test-feedback-group",
         )
         consumer.close()
         return
@@ -229,7 +217,7 @@ def test_feedback_consumer(
     # Produce test messages
     producer = KafkaProducer(
         bootstrap_servers=kafka_bootstrap_servers,
-        value_serializer=lambda v: json.dumps(v).encode('utf-8')
+        value_serializer=lambda v: json.dumps(v).encode("utf-8"),
     )
 
     feedback_data = [
@@ -250,7 +238,7 @@ def test_feedback_consumer(
     consumer = FeedbackConsumer(
         bootstrap_servers=kafka_bootstrap_servers,
         topic=test_topics["feedback"],
-        group_id="test-feedback-group"
+        group_id="test-feedback-group",
     )
 
     collected_feedback: list[dict[str, Any]] = []
@@ -282,7 +270,7 @@ def test_prediction_consumer_collect(
         consumer = PredictionConsumer(
             bootstrap_servers=kafka_bootstrap_servers,
             topic=test_topics["predictions"],
-            group_id="test-prediction-group"
+            group_id="test-prediction-group",
         )
         consumer.close()
         return
@@ -290,15 +278,11 @@ def test_prediction_consumer_collect(
     # Produce test predictions
     producer = KafkaProducer(
         bootstrap_servers=kafka_bootstrap_servers,
-        value_serializer=lambda v: json.dumps(v).encode('utf-8')
+        value_serializer=lambda v: json.dumps(v).encode("utf-8"),
     )
 
     predictions = [
-        {
-            "request_id": f"req-{i}",
-            "predictions": [0.3, 0.7],
-            "model_version": "v1"
-        }
+        {"request_id": f"req-{i}", "predictions": [0.3, 0.7], "model_version": "v1"}
         for i in range(5)
     ]
 
@@ -314,7 +298,7 @@ def test_prediction_consumer_collect(
     consumer = PredictionConsumer(
         bootstrap_servers=kafka_bootstrap_servers,
         topic=test_topics["predictions"],
-        group_id="test-prediction-group"
+        group_id="test-prediction-group",
     )
 
     collected = consumer.collect_predictions(max_messages=5)
@@ -342,7 +326,7 @@ def test_consumer_error_handling(
     # Produce message that will cause processing error
     producer = KafkaProducer(
         bootstrap_servers=kafka_bootstrap_servers,
-        value_serializer=lambda v: json.dumps(v).encode('utf-8')
+        value_serializer=lambda v: json.dumps(v).encode("utf-8"),
     )
 
     producer.send(test_topics["feedback"], value={"malformed": "data"})
@@ -354,7 +338,7 @@ def test_consumer_error_handling(
     consumer = FeedbackConsumer(
         bootstrap_servers=kafka_bootstrap_servers,
         topic=test_topics["feedback"],
-        group_id="test-error-group"
+        group_id="test-error-group",
     )
 
     error_count = 0
@@ -385,8 +369,7 @@ def test_end_to_end_prediction_flow(
     """
     # 1. Producer sends prediction
     producer = PredictionProducer(
-        bootstrap_servers=kafka_bootstrap_servers,
-        predictions_topic=test_topics["predictions"]
+        bootstrap_servers=kafka_bootstrap_servers, predictions_topic=test_topics["predictions"]
     )
 
     request_id = f"e2e-test-{int(time.time())}"
@@ -395,7 +378,7 @@ def test_end_to_end_prediction_flow(
         features={"total_orders": 10, "total_revenue": 500.0},
         predictions=[0.25, 0.75],
         model_version="v2",
-        metadata={"strategy": "canary", "canary_weight": 0.1}
+        metadata={"strategy": "canary", "canary_weight": 0.1},
     )
     producer.flush()
     producer.close()
@@ -410,7 +393,7 @@ def test_end_to_end_prediction_flow(
     consumer = PredictionConsumer(
         bootstrap_servers=kafka_bootstrap_servers,
         topic=test_topics["predictions"],
-        group_id="test-e2e-group"
+        group_id="test-e2e-group",
     )
 
     predictions = consumer.collect_predictions(max_messages=10)

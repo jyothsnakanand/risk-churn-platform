@@ -53,9 +53,7 @@ class ModelRouter:
         self.v2_requests = 0
         self.shadow_comparisons: list[dict[str, Any]] = []
 
-    def route(
-        self, features: NDArray[np.float64], request_id: str | None = None
-    ) -> dict[str, Any]:
+    def route(self, features: NDArray[np.float64], request_id: str | None = None) -> dict[str, Any]:
         """Route prediction request based on configured strategy.
 
         Args:
@@ -214,12 +212,8 @@ class ModelRouter:
             "v1_requests": self.v1_requests,
             "v2_requests": self.v2_requests,
             "total_requests": total_requests,
-            "v1_percentage": (
-                self.v1_requests / total_requests if total_requests > 0 else 0
-            ),
-            "v2_percentage": (
-                self.v2_requests / total_requests if total_requests > 0 else 0
-            ),
+            "v1_percentage": (self.v1_requests / total_requests if total_requests > 0 else 0),
+            "v2_percentage": (self.v2_requests / total_requests if total_requests > 0 else 0),
             "shadow_comparisons_count": len(self.shadow_comparisons),
         }
 
@@ -243,8 +237,7 @@ class ModelRouter:
             "avg_v1_latency_ms": np.mean(v1_latencies),
             "avg_v2_latency_ms": np.mean(v2_latencies),
             "latency_improvement_pct": (
-                ((np.mean(v1_latencies) - np.mean(v2_latencies)) / np.mean(v1_latencies))
-                * 100
+                ((np.mean(v1_latencies) - np.mean(v2_latencies)) / np.mean(v1_latencies)) * 100
             ),
         }
 

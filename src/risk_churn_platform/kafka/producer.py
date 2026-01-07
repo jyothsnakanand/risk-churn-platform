@@ -73,9 +73,7 @@ class PredictionProducer:
         }
 
         try:
-            future = self.producer.send(
-                self.predictions_topic, key=request_id, value=event
-            )
+            future = self.producer.send(self.predictions_topic, key=request_id, value=event)
             future.add_callback(self._on_send_success)
             future.add_errback(self._on_send_error)
         except Exception as e:

@@ -88,9 +88,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         super().__init__(app)
         self.limiter = RateLimiter(rate=rate, per=per)
 
-    async def dispatch(
-        self, request: Request, call_next: Callable
-    ) -> Response:
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
         """Process request with rate limiting.
 
         Args:
@@ -111,6 +109,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         api_key = request.headers.get("X-API-Key")
         if api_key:
             import hashlib
+
             client_id = hashlib.sha256(api_key.encode()).hexdigest()
         else:
             # Fall back to IP address
@@ -160,15 +159,13 @@ class AdaptiveRateLimiter:
         """Initialize adaptive rate limiter."""
         # Different rate limiters for different tiers
         self.limiters: dict[str, RateLimiter] = {
-            "free": RateLimiter(rate=100, per=3600),      # 100/hour
-            "basic": RateLimiter(rate=1000, per=3600),    # 1000/hour
-            "premium": RateLimiter(rate=10000, per=3600), # 10000/hour
+            "free": RateLimiter(rate=100, per=3600),  # 100/hour
+            "basic": RateLimiter(rate=1000, per=3600),  # 1000/hour
+            "premium": RateLimiter(rate=10000, per=3600),  # 10000/hour
             "enterprise": RateLimiter(rate=100000, per=3600),  # 100k/hour
         }
 
-    def is_allowed(
-        self, client_id: str, tier: str = "basic"
-    ) -> tuple[bool, dict[str, int]]:
+    def is_allowed(self, client_id: str, tier: str = "basic") -> tuple[bool, dict[str, int]]:
         """Check if request is allowed for client based on tier.
 
         Args:

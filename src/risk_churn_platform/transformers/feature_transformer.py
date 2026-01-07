@@ -130,9 +130,11 @@ class FeatureTransformer:
                 # Handle unseen categories
                 X[col] = X[col].astype(str)
                 le = self.label_encoders[col]
+
                 # Use a function to avoid late binding issue with lambda in loop
                 def encode_value(x, encoder=le):
                     return encoder.transform([x])[0] if x in encoder.classes_ else -1
+
                 X[col] = X[col].apply(encode_value)
 
         return X

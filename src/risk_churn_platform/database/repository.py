@@ -74,9 +74,7 @@ class FeedbackRepository:
 
         return feedback
 
-    def update_feedback(
-        self, request_id: str, actual_label: int
-    ) -> PredictionFeedback | None:
+    def update_feedback(self, request_id: str, actual_label: int) -> PredictionFeedback | None:
         """Update prediction with ground truth label.
 
         Args:
@@ -294,9 +292,7 @@ class MonitoringRepository:
         """
         cutoff_date = datetime.utcnow() - timedelta(days=days)
 
-        query = self.session.query(DriftEvent).filter(
-            DriftEvent.detected_at >= cutoff_date
-        )
+        query = self.session.query(DriftEvent).filter(DriftEvent.detected_at >= cutoff_date)
 
         if drift_detected_only:
             query = query.filter(DriftEvent.drift_detected)
@@ -315,9 +311,7 @@ class RetrainingRepository:
         """
         self.session = session
 
-    def create_job(
-        self, job_id: str, model_version: str, trigger: str
-    ) -> RetrainingJob:
+    def create_job(self, job_id: str, model_version: str, trigger: str) -> RetrainingJob:
         """Create a new retraining job.
 
         Args:
@@ -359,11 +353,7 @@ class RetrainingRepository:
         Returns:
             Updated RetrainingJob or None
         """
-        job = (
-            self.session.query(RetrainingJob)
-            .filter(RetrainingJob.job_id == job_id)
-            .first()
-        )
+        job = self.session.query(RetrainingJob).filter(RetrainingJob.job_id == job_id).first()
 
         if job:
             job.status = status

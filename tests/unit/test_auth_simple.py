@@ -1,6 +1,5 @@
 """Simple tests for authentication module."""
 
-
 from risk_churn_platform.auth.api_key_auth import (
     APIKeyManager,
     get_key_manager,
@@ -11,11 +10,7 @@ def test_api_key_manager_create_key() -> None:
     """Test creating an API key."""
     manager = APIKeyManager()
 
-    key = manager.create_key(
-        name="Test Key",
-        permissions=["predict"],
-        rate_limit=1000
-    )
+    key = manager.create_key(name="Test Key", permissions=["predict"], rate_limit=1000)
 
     assert key.startswith("sk_live_")
     assert len(key) > 20
@@ -80,7 +75,9 @@ def test_api_key_manager_permissions() -> None:
     """Test API key with different permissions."""
     manager = APIKeyManager()
 
-    key = manager.create_key(name="Admin Key", permissions=["predict", "admin", "monitor"], rate_limit=5000)
+    key = manager.create_key(
+        name="Admin Key", permissions=["predict", "admin", "monitor"], rate_limit=5000
+    )
 
     api_key = manager.validate_key(key)
     assert api_key is not None

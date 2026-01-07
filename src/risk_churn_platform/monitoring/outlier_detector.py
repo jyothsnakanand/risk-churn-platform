@@ -118,9 +118,7 @@ class OutlierDetector:
         return {
             "total_samples": total_samples,
             "total_outliers": total_outliers,
-            "overall_outlier_rate": (
-                total_outliers / total_samples if total_samples > 0 else 0
-            ),
+            "overall_outlier_rate": (total_outliers / total_samples if total_samples > 0 else 0),
             "avg_outlier_rate": np.mean([h["outlier_rate"] for h in self.outlier_history]),
             "max_outlier_rate": max(h["outlier_rate"] for h in self.outlier_history),
             "detection_count": len(self.outlier_history),
