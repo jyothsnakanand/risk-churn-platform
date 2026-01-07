@@ -11,6 +11,33 @@ from risk_churn_platform.routers.model_router import ModelRouter, RoutingStrateg
 from risk_churn_platform.transformers.feature_transformer import FeatureTransformer
 
 
+def get_test_customer_payload():
+    """Get valid e-commerce customer payload for testing."""
+    return {
+        "customer_age_days": 365,
+        "account_age_days": 365,
+        "total_orders": 10,
+        "total_revenue": 500.0,
+        "avg_order_value": 50.0,
+        "days_since_last_order": 30,
+        "order_frequency": 1.0,
+        "website_visits_30d": 5,
+        "email_open_rate": 0.5,
+        "cart_abandonment_rate": 0.3,
+        "product_views_30d": 10,
+        "support_tickets_total": 1,
+        "support_tickets_open": 0,
+        "returns_count": 1,
+        "refunds_count": 0,
+        "favorite_category": "Fashion",
+        "discount_usage_rate": 0.3,
+        "premium_product_rate": 0.5,
+        "payment_method": "Credit Card",
+        "shipping_method": "Standard",
+        "failed_payment_count": 0,
+    }
+
+
 @pytest.fixture
 def mock_transformer() -> MagicMock:
     """Create mock transformer.
@@ -86,17 +113,7 @@ def test_predict_endpoint(
     client: TestClient, mock_transformer: MagicMock, mock_router: MagicMock
 ) -> None:
     """Test prediction endpoint."""
-    payload = {
-        "customer_tenure": 24,
-        "monthly_charges": 79.99,
-        "total_charges": 1919.76,
-        "contract_type": "Two year",
-        "payment_method": "Credit card",
-        "internet_service": "Fiber optic",
-        "support_tickets": 2,
-        "login_frequency": 5.2,
-    }
-
+    payload = get_test_customer_payload()
     response = client.post("/predict", json=payload)
 
     assert response.status_code == 200
@@ -118,8 +135,9 @@ def test_predict_endpoint(
 def test_predict_invalid_data(client: TestClient) -> None:
     """Test prediction with invalid data."""
     payload = {
-        "customer_tenure": -1,  # Invalid negative value
-        "monthly_charges": 79.99,
+        "customer_age_days": -1,  # Invalid: negative
+        "account_age_days": 365,
+        "total_orders": -5,  # Invalid: negative
     }
 
     response = client.post("/predict", json=payload)
@@ -129,17 +147,7 @@ def test_predict_invalid_data(client: TestClient) -> None:
 
 def test_explain_endpoint_no_explainer(client: TestClient) -> None:
     """Test explain endpoint when explainer is not available."""
-    payload = {
-        "customer_tenure": 24,
-        "monthly_charges": 79.99,
-        "total_charges": 1919.76,
-        "contract_type": "Two year",
-        "payment_method": "Credit card",
-        "internet_service": "Fiber optic",
-        "support_tickets": 2,
-        "login_frequency": 5.2,
-    }
-
+    payload = get_test_customer_payload()
     response = client.post("/explain", json=payload)
 
     assert response.status_code == 503  # Service unavailable
@@ -203,17 +211,7 @@ def test_predict_with_kafka(mock_transformer: MagicMock, mock_router: MagicMock)
     )
     client = TestClient(app)
 
-    payload = {
-        "customer_tenure": 24,
-        "monthly_charges": 79.99,
-        "total_charges": 1919.76,
-        "contract_type": "Two year",
-        "payment_method": "Credit card",
-        "internet_service": "Fiber optic",
-        "support_tickets": 2,
-        "login_frequency": 5.2,
-    }
-
+    payload = get_test_customer_payload()
     response = client.post("/predict", json=payload)
 
     assert response.status_code == 200
@@ -238,17 +236,7 @@ def test_explain_with_explainer(mock_transformer: MagicMock, mock_router: MagicM
     )
     client = TestClient(app)
 
-    payload = {
-        "customer_tenure": 24,
-        "monthly_charges": 79.99,
-        "total_charges": 1919.76,
-        "contract_type": "Two year",
-        "payment_method": "Credit card",
-        "internet_service": "Fiber optic",
-        "support_tickets": 2,
-        "login_frequency": 5.2,
-    }
-
+    payload = get_test_customer_payload()
     response = client.post("/explain", json=payload)
 
     assert response.status_code == 200
@@ -272,16 +260,7 @@ def test_predict_error_handling(mock_transformer: MagicMock, mock_router: MagicM
     )
     client = TestClient(app)
 
-    payload = {
-        "customer_tenure": 24,
-        "monthly_charges": 79.99,
-        "total_charges": 1919.76,
-        "contract_type": "Two year",
-        "payment_method": "Credit card",
-        "internet_service": "Fiber optic",
-        "support_tickets": 2,
-        "login_frequency": 5.2,
-    }
+    payload = get_test_customer_payload()
 
     response = client.post("/predict", json=payload)
 

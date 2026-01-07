@@ -1,0 +1,96 @@
+# Artillery load testing configuration
+# Run with: artillery run tests/load/artillery_config.yml
+
+config:
+  target: "http://localhost:8080"
+  phases:
+    # Warm-up phase
+    - duration: 60
+      arrivalRate: 5
+      name: "Warm-up"
+
+    # Ramp-up phase
+    - duration: 120
+      arrivalRate: 10
+      rampTo: 50
+      name: "Ramp-up"
+
+    # Sustained load
+    - duration: 300
+      arrivalRate: 50
+      name: "Sustained Load"
+
+    # Spike test
+    - duration: 60
+      arrivalRate: 200
+      name: "Spike Test"
+
+    # Cool-down
+    - duration: 60
+      arrivalRate: 10
+      name: "Cool-down"
+
+  processor: "./artillery_processor.js"
+
+  defaults:
+    headers:
+      X-API-Key: "sk_test_your_api_key_here"
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "Predict Churn"
+    weight: 80
+    flow:
+      - function: "generateCustomerData"
+      - post:
+          url: "/predict"
+          json:
+            customer_age_days: "{{ customer_age_days }}"
+            account_age_days: "{{ account_age_days }}"
+            total_orders: "{{ total_orders }}"
+            total_revenue: "{{ total_revenue }}"
+            avg_order_value: "{{ avg_order_value }}"
+            days_since_last_order: "{{ days_since_last_order }}"
+            order_frequency: "{{ order_frequency }}"
+            website_visits_30d: "{{ website_visits_30d }}"
+            email_open_rate: "{{ email_open_rate }}"
+            cart_abandonment_rate: "{{ cart_abandonment_rate }}"
+            product_views_30d: "{{ product_views_30d }}"
+            support_tickets_total: "{{ support_tickets_total }}"
+            support_tickets_open: "{{ support_tickets_open }}"
+            returns_count: "{{ returns_count }}"
+            refunds_count: "{{ refunds_count }}"
+            favorite_category: "{{ favorite_category }}"
+            discount_usage_rate: "{{ discount_usage_rate }}"
+            premium_product_rate: "{{ premium_product_rate }}"
+            payment_method: "{{ payment_method }}"
+            shipping_method: "{{ shipping_method }}"
+            failed_payment_count: "{{ failed_payment_count }}"
+          capture:
+            - json: "$.request_id"
+              as: "request_id"
+            - json: "$.churn_probability"
+              as: "churn_prob"
+          expect:
+            - statusCode: 200
+            - contentType: json
+            - hasProperty: "risk_score"
+
+      - think: 1
+
+  - name: "Health Check"
+    weight: 10
+    flow:
+      - get:
+          url: "/health"
+          expect:
+            - statusCode: 200
+            - hasProperty: "status"
+
+  - name: "Router Metrics"
+    weight: 10
+    flow:
+      - get:
+          url: "/router/metrics"
+          expect:
+            - statusCode: 200
