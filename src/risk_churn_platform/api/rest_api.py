@@ -22,16 +22,40 @@ PREDICTION_LATENCY = Histogram(
 
 
 class PredictionRequest(BaseModel):
-    """Prediction request schema."""
+    """E-commerce customer churn prediction request schema."""
 
-    customer_tenure: float = Field(..., description="Customer tenure in months", ge=0)
-    monthly_charges: float = Field(..., description="Monthly charges", ge=0)
-    total_charges: float = Field(..., description="Total charges", ge=0)
-    contract_type: str = Field(..., description="Contract type")
-    payment_method: str = Field(..., description="Payment method")
-    internet_service: str = Field(..., description="Internet service type")
-    support_tickets: int = Field(..., description="Number of support tickets", ge=0)
-    login_frequency: float = Field(..., description="Login frequency per week", ge=0)
+    # Customer Demographics & Tenure
+    customer_age_days: int = Field(..., description="Days since first purchase", ge=0)
+    account_age_days: int = Field(..., description="Days since account creation", ge=0)
+
+    # Purchase Behavior
+    total_orders: int = Field(..., description="Total number of orders", ge=0)
+    total_revenue: float = Field(..., description="Total customer lifetime value", ge=0)
+    avg_order_value: float = Field(..., description="Average order value", ge=0)
+    days_since_last_order: int = Field(..., description="Days since last purchase", ge=0)
+    order_frequency: float = Field(..., description="Orders per month", ge=0)
+
+    # Engagement Metrics
+    website_visits_30d: int = Field(..., description="Website visits in last 30 days", ge=0)
+    email_open_rate: float = Field(..., description="Email open rate (0-1)", ge=0, le=1)
+    cart_abandonment_rate: float = Field(..., description="Cart abandonment rate (0-1)", ge=0, le=1)
+    product_views_30d: int = Field(..., description="Product views in last 30 days", ge=0)
+
+    # Customer Service
+    support_tickets_total: int = Field(..., description="Total support tickets", ge=0)
+    support_tickets_open: int = Field(..., description="Currently open tickets", ge=0)
+    returns_count: int = Field(..., description="Number of returns", ge=0)
+    refunds_count: int = Field(..., description="Number of refunds", ge=0)
+
+    # Product Preferences
+    favorite_category: str = Field(..., description="Most purchased category")
+    discount_usage_rate: float = Field(..., description="Discount usage rate (0-1)", ge=0, le=1)
+    premium_product_rate: float = Field(..., description="Premium products rate (0-1)", ge=0, le=1)
+
+    # Payment & Shipping
+    payment_method: str = Field(..., description="Primary payment method")
+    shipping_method: str = Field(..., description="Primary shipping preference")
+    failed_payment_count: int = Field(..., description="Failed payment attempts", ge=0)
 
 
 class PredictionResponse(BaseModel):
@@ -72,8 +96,8 @@ def create_app(
         FastAPI application
     """
     app = FastAPI(
-        title="Risk/Churn Scoring Platform",
-        description="ML platform for risk and churn prediction with A/B testing and monitoring",
+        title="E-Commerce Customer Churn Prediction Platform",
+        description="ML platform for predicting e-commerce customer churn and spending risk with A/B testing, drift detection, and automated retraining",
         version="0.1.0",
     )
 
@@ -133,10 +157,12 @@ def create_app(
 
             # Send to Kafka for offline evaluation
             if kafka_producer:
+                # predictions is already a list from router
+                pred_list = predictions if isinstance(predictions, list) else predictions.tolist()
                 kafka_producer.send_prediction(
                     request_id=request_id,
                     features=features_dict,
-                    predictions=predictions.tolist(),
+                    predictions=pred_list,
                     model_version=result["model_version"],
                     metadata={"strategy": result["strategy"]},
                 )
@@ -156,9 +182,12 @@ def create_app(
                 churn_prob=churn_prob,
             )
 
+            # predictions is already a list from result["predictions"][0]
+            pred_list = predictions if isinstance(predictions, list) else predictions.tolist()
+
             return PredictionResponse(
                 request_id=request_id,
-                predictions=predictions.tolist(),
+                predictions=pred_list,
                 model_version=result["model_version"],
                 strategy=result["strategy"],
                 latency_ms=result["latency_ms"],
@@ -250,3 +279,89 @@ def create_app(
         return {"message": "Rolled back to v1"}
 
     return app
+
+
+# Initialize default app instance for uvicorn
+def _initialize_app() -> FastAPI:
+    """Initialize the app with loaded models and components."""
+    import os
+    from pathlib import Path
+
+    import yaml
+
+    from risk_churn_platform.models.risk_scorer import RiskScorerV1, RiskScorerV2
+    from risk_churn_platform.routers.model_router import ModelRouter, RoutingStrategy
+    from risk_churn_platform.transformers.feature_transformer import FeatureTransformer
+
+    # Load config
+    config_path = Path("config/config.yaml")
+    if config_path.exists():
+        with open(config_path) as f:
+            config = yaml.safe_load(f)
+    else:
+        # Default config
+        config = {
+            "transformer": {
+                "features": [
+                    "customer_age_days", "account_age_days", "total_orders",
+                    "total_revenue", "avg_order_value", "days_since_last_order",
+                    "order_frequency", "website_visits_30d", "email_open_rate",
+                    "cart_abandonment_rate", "product_views_30d", "support_tickets_total",
+                    "support_tickets_open", "returns_count", "refunds_count",
+                    "favorite_category", "discount_usage_rate", "premium_product_rate",
+                    "payment_method", "shipping_method", "failed_payment_count",
+                ]
+            },
+            "router": {"strategy": "shadow"}
+        }
+
+    # Initialize and load transformer
+    transformer_path = Path("models/transformer.pkl")
+    if transformer_path.exists():
+        import pickle
+        with open(transformer_path, 'rb') as f:
+            transformer = pickle.load(f)
+        logger.info("loaded_transformer", path=str(transformer_path))
+    else:
+        # Create new transformer (won't be fitted)
+        transformer = FeatureTransformer(feature_names=config["transformer"]["features"])
+        logger.warning("transformer_not_found", message="Creating unfitted transformer")
+
+    # Load models
+    model_v1 = RiskScorerV1()
+    model_v2 = RiskScorerV2()
+
+    v1_path = Path("models/v1/model.pkl")
+    v2_path = Path("models/v2/model.pkl")
+
+    if v1_path.exists():
+        model_v1.load(str(v1_path))
+        logger.info("loaded_model_v1", path=str(v1_path))
+
+    if v2_path.exists():
+        model_v2.load(str(v2_path))
+        logger.info("loaded_model_v2", path=str(v2_path))
+
+    # Initialize router
+    strategy_str = config["router"].get("strategy", "shadow")
+    strategy_map = {
+        "shadow": RoutingStrategy.SHADOW,
+        "canary": RoutingStrategy.CANARY,
+        "blue-green": RoutingStrategy.BLUE_GREEN
+    }
+    model_router = ModelRouter(
+        model_v1=model_v1,
+        model_v2=model_v2,
+        strategy=strategy_map.get(strategy_str, RoutingStrategy.SHADOW)
+    )
+
+    return create_app(
+        model_router=model_router,
+        transformer=transformer,
+        explainer=None,
+        kafka_producer=None
+    )
+
+
+# Create default app instance for uvicorn
+app = _initialize_app()

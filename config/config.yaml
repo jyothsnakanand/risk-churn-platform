@@ -27,14 +27,38 @@ router:
 transformer:
   enabled: true
   features:
-    - "customer_tenure"
-    - "monthly_charges"
-    - "total_charges"
-    - "contract_type"
-    - "payment_method"
-    - "internet_service"
-    - "support_tickets"
-    - "login_frequency"
+    # Customer Demographics & Tenure
+    - "customer_age_days"           # Days since first purchase
+    - "account_age_days"            # Days since account creation
+
+    # Purchase Behavior
+    - "total_orders"                # Total number of orders
+    - "total_revenue"               # Total customer lifetime value
+    - "avg_order_value"             # Average order value
+    - "days_since_last_order"       # Recency metric
+    - "order_frequency"             # Orders per month
+
+    # Engagement Metrics
+    - "website_visits_30d"          # Website visits in last 30 days
+    - "email_open_rate"             # Email engagement rate
+    - "cart_abandonment_rate"       # Rate of abandoned carts
+    - "product_views_30d"           # Product views in last 30 days
+
+    # Customer Service
+    - "support_tickets_total"       # Total support tickets
+    - "support_tickets_open"        # Currently open tickets
+    - "returns_count"               # Number of returns
+    - "refunds_count"               # Number of refunds
+
+    # Product Preferences
+    - "favorite_category"           # Most purchased category
+    - "discount_usage_rate"         # How often uses discounts
+    - "premium_product_rate"        # % of premium products purchased
+
+    # Payment & Shipping
+    - "payment_method"              # Primary payment method
+    - "shipping_method"             # Primary shipping preference
+    - "failed_payment_count"        # Number of failed payments
 
 explainer:
   enabled: true

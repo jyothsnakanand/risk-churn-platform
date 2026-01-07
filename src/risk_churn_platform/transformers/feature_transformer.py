@@ -20,13 +20,26 @@ class FeatureTransformer:
         self.feature_names = feature_names
         self.scaler = StandardScaler()
         self.label_encoders: Dict[str, LabelEncoder] = {}
-        self.categorical_features = ["contract_type", "payment_method", "internet_service"]
+        self.categorical_features = ["favorite_category", "payment_method", "shipping_method"]
         self.numerical_features = [
-            "customer_tenure",
-            "monthly_charges",
-            "total_charges",
-            "support_tickets",
-            "login_frequency",
+            "customer_age_days",
+            "account_age_days",
+            "total_orders",
+            "total_revenue",
+            "avg_order_value",
+            "days_since_last_order",
+            "order_frequency",
+            "website_visits_30d",
+            "email_open_rate",
+            "cart_abandonment_rate",
+            "product_views_30d",
+            "support_tickets_total",
+            "support_tickets_open",
+            "returns_count",
+            "refunds_count",
+            "discount_usage_rate",
+            "premium_product_rate",
+            "failed_payment_count",
         ]
         self.fitted = False
 
