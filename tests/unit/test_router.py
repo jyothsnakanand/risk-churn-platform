@@ -3,8 +3,8 @@
 import numpy as np
 import pytest
 
-from src.risk_churn_platform.models.risk_scorer import RiskScorerV1, RiskScorerV2
-from src.risk_churn_platform.routers.model_router import ModelRouter, RoutingStrategy
+from risk_churn_platform.models.risk_scorer import RiskScorerV1, RiskScorerV2
+from risk_churn_platform.routers.model_router import ModelRouter, RoutingStrategy
 
 
 @pytest.fixture

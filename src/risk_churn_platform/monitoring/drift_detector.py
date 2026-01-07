@@ -104,7 +104,8 @@ class DriftDetector:
         detection_time = time.time() - start_time
 
         is_drift = bool(drift_result["data"]["is_drift"])
-        p_value = float(drift_result["data"]["p_val"])
+        p_val_data = drift_result["data"]["p_val"]
+        p_value = float(p_val_data) if np.isscalar(p_val_data) else float(np.mean(p_val_data))
 
         # Feature-level drift (if available)
         feature_drift = {}
