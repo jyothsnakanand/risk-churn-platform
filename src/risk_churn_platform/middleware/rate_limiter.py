@@ -2,7 +2,7 @@
 
 import time
 from collections import defaultdict
-from typing import Callable, Tuple
+from collections.abc import Callable
 
 import structlog
 from fastapi import HTTPException, Request, Response, status
@@ -26,11 +26,11 @@ class RateLimiter:
         self.allowance_per_second = rate / per
 
         # Store: {client_id: (tokens, last_check_time)}
-        self.clients: dict[str, Tuple[float, float]] = defaultdict(
+        self.clients: dict[str, tuple[float, float]] = defaultdict(
             lambda: (float(rate), time.time())
         )
 
-    def is_allowed(self, client_id: str) -> Tuple[bool, dict[str, int]]:
+    def is_allowed(self, client_id: str) -> tuple[bool, dict[str, int]]:
         """Check if request is allowed for client.
 
         Args:
@@ -168,7 +168,7 @@ class AdaptiveRateLimiter:
 
     def is_allowed(
         self, client_id: str, tier: str = "basic"
-    ) -> Tuple[bool, dict[str, int]]:
+    ) -> tuple[bool, dict[str, int]]:
         """Check if request is allowed for client based on tier.
 
         Args:

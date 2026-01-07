@@ -4,8 +4,6 @@ import os
 import sys
 from unittest.mock import MagicMock, Mock
 
-import pytest
-
 
 def is_kafka_mocked():
     """Check if Kafka should be mocked."""

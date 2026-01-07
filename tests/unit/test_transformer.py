@@ -3,7 +3,6 @@
 import numpy as np
 import pandas as pd
 import pytest
-from numpy.typing import NDArray
 
 from risk_churn_platform.transformers.feature_transformer import FeatureTransformer
 

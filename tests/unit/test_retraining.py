@@ -2,10 +2,10 @@
 
 import os
 import tempfile
+
 import numpy as np
 import pandas as pd
 import pytest
-from numpy.typing import NDArray
 
 from risk_churn_platform.deployment.retraining import RetrainingPipeline
 

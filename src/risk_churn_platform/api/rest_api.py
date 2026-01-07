@@ -6,7 +6,6 @@ from typing import Any
 import structlog
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from prometheus_client import Counter, Histogram, make_asgi_app
 from pydantic import BaseModel, Field
 
@@ -201,7 +200,7 @@ def create_app(
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Prediction failed: {str(e)}",
-            )
+            ) from e
 
     @app.post("/explain")
     async def explain_prediction(request: PredictionRequest) -> dict[str, Any]:
@@ -236,7 +235,7 @@ def create_app(
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Explanation failed: {str(e)}",
-            )
+            ) from e
 
     @app.get("/router/metrics")
     async def get_router_metrics() -> dict[str, Any]:
@@ -284,7 +283,6 @@ def create_app(
 # Initialize default app instance for uvicorn
 def _initialize_app() -> FastAPI:
     """Initialize the app with loaded models and components."""
-    import os
     from pathlib import Path
 
     import yaml

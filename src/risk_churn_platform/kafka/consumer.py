@@ -1,7 +1,8 @@
 """Kafka consumer for feedback and retraining pipeline."""
 
 import json
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import structlog
 from kafka import KafkaConsumer

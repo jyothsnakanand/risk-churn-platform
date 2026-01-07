@@ -2,8 +2,8 @@
 
 from .rate_limiter import (
     AdaptiveRateLimiter,
-    RateLimitMiddleware,
     RateLimiter,
+    RateLimitMiddleware,
     get_rate_limiter,
 )
 

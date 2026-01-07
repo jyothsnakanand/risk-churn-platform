@@ -1,16 +1,14 @@
 """Database repository for feedback and metrics."""
 
 from datetime import datetime, timedelta
-from typing import Optional
 
 import pandas as pd
 import structlog
-from sqlalchemy import and_, desc, func
+from sqlalchemy import and_, desc
 from sqlalchemy.orm import Session
 
 from .models import (
     DriftEvent,
-    ModelPerformance,
     OutlierEvent,
     PredictionFeedback,
     RetrainingJob,
@@ -39,8 +37,8 @@ class FeedbackRepository:
         risk_score: float,
         model_version: str,
         routing_strategy: str,
-        latency_ms: Optional[float] = None,
-        metadata: Optional[dict] = None,
+        latency_ms: float | None = None,
+        metadata: dict | None = None,
     ) -> PredictionFeedback:
         """Store a prediction.
 
@@ -78,7 +76,7 @@ class FeedbackRepository:
 
     def update_feedback(
         self, request_id: str, actual_label: int
-    ) -> Optional[PredictionFeedback]:
+    ) -> PredictionFeedback | None:
         """Update prediction with ground truth label.
 
         Args:
@@ -106,7 +104,7 @@ class FeedbackRepository:
         self,
         min_samples: int = 10000,
         days_back: int = 90,
-        model_version: Optional[str] = None,
+        model_version: str | None = None,
     ) -> pd.DataFrame:
         """Get feedback data for retraining.
 
@@ -210,9 +208,9 @@ class MonitoringRepository:
         event_id: str,
         drift_detected: bool,
         drift_method: str,
-        p_value: Optional[float] = None,
+        p_value: float | None = None,
         severity: str = "warning",
-        affected_features: Optional[list[str]] = None,
+        affected_features: list[str] | None = None,
     ) -> DriftEvent:
         """Store a drift detection event.
 
@@ -245,7 +243,7 @@ class MonitoringRepository:
     def store_outlier_event(
         self,
         event_id: str,
-        request_id: Optional[str],
+        request_id: str | None,
         is_outlier: bool,
         outlier_score: float,
         outlier_method: str,
@@ -301,7 +299,7 @@ class MonitoringRepository:
         )
 
         if drift_detected_only:
-            query = query.filter(DriftEvent.drift_detected == True)
+            query = query.filter(DriftEvent.drift_detected)
 
         return query.order_by(desc(DriftEvent.detected_at)).all()
 
@@ -347,9 +345,9 @@ class RetrainingRepository:
         self,
         job_id: str,
         status: str,
-        metrics: Optional[dict] = None,
-        error_message: Optional[str] = None,
-    ) -> Optional[RetrainingJob]:
+        metrics: dict | None = None,
+        error_message: str | None = None,
+    ) -> RetrainingJob | None:
         """Update retraining job status.
 
         Args:

@@ -3,7 +3,6 @@
 import hashlib
 import secrets
 from datetime import datetime, timedelta
-from typing import Optional
 
 import structlog
 from fastapi import HTTPException, Security, status
@@ -23,7 +22,7 @@ class APIKey(BaseModel):
     key_hash: str
     name: str
     created_at: datetime
-    expires_at: Optional[datetime] = None
+    expires_at: datetime | None = None
     is_active: bool = True
     permissions: list[str] = ["predict"]  # predict, admin, monitor
     rate_limit: int = 1000  # requests per hour
@@ -62,7 +61,7 @@ class APIKeyManager:
         name: str,
         permissions: list[str],
         rate_limit: int = 1000,
-        expires_in_days: Optional[int] = None,
+        expires_in_days: int | None = None,
     ) -> str:
         """Create a new API key.
 
@@ -96,7 +95,7 @@ class APIKeyManager:
         logger.info("api_key_created", key_id=key_id, name=name)
         return key
 
-    def validate_key(self, api_key: str) -> Optional[APIKey]:
+    def validate_key(self, api_key: str) -> APIKey | None:
         """Validate an API key.
 
         Args:
@@ -134,7 +133,7 @@ class APIKeyManager:
         Returns:
             True if revoked, False if not found
         """
-        for key_hash, key_obj in self.keys.items():
+        for _key_hash, key_obj in self.keys.items():
             if key_obj.key_id == key_id:
                 key_obj.is_active = False
                 logger.info("api_key_revoked", key_id=key_id)
@@ -162,7 +161,7 @@ class APIKeyManager:
 
 
 # Global key manager instance
-_key_manager: Optional[APIKeyManager] = None
+_key_manager: APIKeyManager | None = None
 
 
 def get_key_manager() -> APIKeyManager:
@@ -174,7 +173,7 @@ def get_key_manager() -> APIKeyManager:
 
 
 async def verify_api_key(
-    api_key: Optional[str] = Security(api_key_header),
+    api_key: str | None = Security(api_key_header),
 ) -> APIKey:
     """Verify API key from request header.
 

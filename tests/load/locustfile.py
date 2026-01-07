@@ -6,7 +6,7 @@ Run with:
 
 import random
 import time
-from typing import Any, Dict
+from typing import Any
 
 from locust import HttpUser, between, task
 
@@ -23,7 +23,7 @@ class MLPlatformUser(HttpUser):
         self.api_key = "sk_test_your_api_key_here"  # Replace with actual key
         self.headers = {"X-API-Key": self.api_key}
 
-    def generate_customer_data(self) -> Dict[str, Any]:
+    def generate_customer_data(self) -> dict[str, Any]:
         """Generate realistic customer data.
 
         Returns:

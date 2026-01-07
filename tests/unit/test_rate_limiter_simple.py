@@ -1,11 +1,10 @@
 """Simple tests for rate limiter."""
 
 import time
-import pytest
 
 from risk_churn_platform.middleware.rate_limiter import (
-    RateLimiter,
     AdaptiveRateLimiter,
+    RateLimiter,
 )
 
 

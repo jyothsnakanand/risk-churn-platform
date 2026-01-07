@@ -1,11 +1,7 @@
 """Simple tests for authentication module."""
 
-import hashlib
-import pytest
-from datetime import datetime, timedelta
 
 from risk_churn_platform.auth.api_key_auth import (
-    APIKey,
     APIKeyManager,
     get_key_manager,
 )

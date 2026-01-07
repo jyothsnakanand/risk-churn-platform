@@ -1,7 +1,6 @@
 """Database models for feedback storage."""
 
 from datetime import datetime
-from typing import Optional
 
 from sqlalchemy import (
     JSON,

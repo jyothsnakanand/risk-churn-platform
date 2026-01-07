@@ -1,13 +1,13 @@
 """Unit tests for REST API."""
 
+from unittest.mock import MagicMock
+
 import numpy as np
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import MagicMock, patch
 
 from risk_churn_platform.api.rest_api import create_app
-from risk_churn_platform.models.risk_scorer import RiskScorerV1, RiskScorerV2
-from risk_churn_platform.routers.model_router import ModelRouter, RoutingStrategy
+from risk_churn_platform.routers.model_router import ModelRouter
 from risk_churn_platform.transformers.feature_transformer import FeatureTransformer
 
 

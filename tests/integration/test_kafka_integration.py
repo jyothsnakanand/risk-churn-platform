@@ -10,7 +10,6 @@ import json
 import os
 import time
 from typing import Any
-from unittest.mock import MagicMock
 
 import pytest
 from kafka import KafkaConsumer, KafkaProducer

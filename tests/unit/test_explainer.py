@@ -1,9 +1,10 @@
 """Unit tests for model explainer."""
 
+from unittest.mock import MagicMock, patch
+
 import numpy as np
 import pytest
 from numpy.typing import NDArray
-from unittest.mock import MagicMock, patch
 
 from risk_churn_platform.explainers.model_explainer import ModelExplainer, SeldonExplainer
 from risk_churn_platform.models.risk_scorer import RiskScorerV1

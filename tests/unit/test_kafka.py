@@ -1,11 +1,12 @@
 """Unit tests for Kafka components."""
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import MagicMock, patch, call
 from kafka.errors import KafkaError
 
-from risk_churn_platform.kafka.producer import PredictionProducer
 from risk_churn_platform.kafka.consumer import FeedbackConsumer, PredictionConsumer
+from risk_churn_platform.kafka.producer import PredictionProducer
 
 
 @pytest.fixture

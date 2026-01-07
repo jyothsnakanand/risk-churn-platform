@@ -10,7 +10,7 @@ Supports multiple backends:
 import json
 import os
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 
 import structlog
 
@@ -21,7 +21,7 @@ class SecretsBackend(ABC):
     """Abstract base for secrets backends."""
 
     @abstractmethod
-    def get_secret(self, key: str) -> Optional[str]:
+    def get_secret(self, key: str) -> str | None:
         """Get a secret value.
 
         Args:
@@ -33,7 +33,7 @@ class SecretsBackend(ABC):
         pass
 
     @abstractmethod
-    def get_secret_dict(self, key: str) -> Optional[dict[str, Any]]:
+    def get_secret_dict(self, key: str) -> dict[str, Any] | None:
         """Get a secret as dictionary (for JSON secrets).
 
         Args:
@@ -48,7 +48,7 @@ class SecretsBackend(ABC):
 class EnvironmentSecretsBackend(SecretsBackend):
     """Load secrets from environment variables."""
 
-    def get_secret(self, key: str) -> Optional[str]:
+    def get_secret(self, key: str) -> str | None:
         """Get secret from environment.
 
         Args:
@@ -62,7 +62,7 @@ class EnvironmentSecretsBackend(SecretsBackend):
             logger.debug("secret_loaded_from_env", key=key)
         return value
 
-    def get_secret_dict(self, key: str) -> Optional[dict[str, Any]]:
+    def get_secret_dict(self, key: str) -> dict[str, Any] | None:
         """Get secret as dictionary from environment.
 
         Args:
@@ -101,12 +101,12 @@ class AWSSecretsBackend(SecretsBackend):
                 import boto3
                 self._client = boto3.client("secretsmanager", region_name=self.region)
                 logger.info("aws_secrets_manager_initialized", region=self.region)
-            except ImportError:
+            except ImportError as err:
                 logger.error("boto3_not_installed")
-                raise RuntimeError("boto3 required for AWS Secrets Manager")
+                raise RuntimeError("boto3 required for AWS Secrets Manager") from err
         return self._client
 
-    def get_secret(self, key: str) -> Optional[str]:
+    def get_secret(self, key: str) -> str | None:
         """Get secret from AWS Secrets Manager.
 
         Args:
@@ -123,7 +123,7 @@ class AWSSecretsBackend(SecretsBackend):
             logger.error("aws_secret_fetch_failed", key=key, error=str(e))
             return None
 
-    def get_secret_dict(self, key: str) -> Optional[dict[str, Any]]:
+    def get_secret_dict(self, key: str) -> dict[str, Any] | None:
         """Get secret as dictionary from AWS.
 
         Args:
@@ -148,7 +148,7 @@ class VaultSecretsBackend(SecretsBackend):
     def __init__(
         self,
         url: str = "http://localhost:8200",
-        token: Optional[str] = None,
+        token: str | None = None,
         mount_point: str = "secret"
     ) -> None:
         """Initialize Vault backend.
@@ -173,12 +173,12 @@ class VaultSecretsBackend(SecretsBackend):
                 if not self._client.is_authenticated():
                     raise RuntimeError("Vault authentication failed")
                 logger.info("vault_initialized", url=self.url)
-            except ImportError:
+            except ImportError as err:
                 logger.error("hvac_not_installed")
-                raise RuntimeError("hvac required for HashiCorp Vault")
+                raise RuntimeError("hvac required for HashiCorp Vault") from err
         return self._client
 
-    def get_secret(self, key: str) -> Optional[str]:
+    def get_secret(self, key: str) -> str | None:
         """Get secret from Vault.
 
         Args:
@@ -201,7 +201,7 @@ class VaultSecretsBackend(SecretsBackend):
             logger.error("vault_secret_fetch_failed", key=key, error=str(e))
             return None
 
-    def get_secret_dict(self, key: str) -> Optional[dict[str, Any]]:
+    def get_secret_dict(self, key: str) -> dict[str, Any] | None:
         """Get secret as dictionary from Vault.
 
         Args:
@@ -225,7 +225,7 @@ class SecretsManager:
 
     def __init__(
         self,
-        backend: Optional[SecretsBackend] = None,
+        backend: SecretsBackend | None = None,
         fallback_to_env: bool = True
     ) -> None:
         """Initialize secrets manager.
@@ -264,7 +264,7 @@ class SecretsManager:
         logger.info("using_environment_variables_backend")
         return EnvironmentSecretsBackend()
 
-    def get(self, key: str, default: Optional[str] = None) -> Optional[str]:
+    def get(self, key: str, default: str | None = None) -> str | None:
         """Get a secret value.
 
         Args:
@@ -283,7 +283,7 @@ class SecretsManager:
 
         return value or default
 
-    def get_dict(self, key: str, default: Optional[dict] = None) -> Optional[dict[str, Any]]:
+    def get_dict(self, key: str, default: dict | None = None) -> dict[str, Any] | None:
         """Get a secret as dictionary.
 
         Args:
@@ -322,7 +322,7 @@ class SecretsManager:
 
 
 # Global secrets manager instance
-_secrets_manager: Optional[SecretsManager] = None
+_secrets_manager: SecretsManager | None = None
 
 
 def get_secrets_manager() -> SecretsManager:
@@ -337,7 +337,7 @@ def get_secrets_manager() -> SecretsManager:
     return _secrets_manager
 
 
-def get_secret(key: str, default: Optional[str] = None) -> Optional[str]:
+def get_secret(key: str, default: str | None = None) -> str | None:
     """Convenience function to get a secret.
 
     Args:

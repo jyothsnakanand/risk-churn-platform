@@ -1,7 +1,6 @@
 """Simple tests for secrets management."""
 
 import os
-import pytest
 
 from risk_churn_platform.config.secrets import (
     EnvironmentSecretsBackend,

@@ -4,14 +4,14 @@ import numpy as np
 import pytest
 from numpy.typing import NDArray
 
-from risk_churn_platform.monitoring.drift_detector import DriftDetector
-from risk_churn_platform.monitoring.outlier_detector import OutlierDetector
 from risk_churn_platform.monitoring.alerting import (
     Alert,
     AlertManager,
     AlertSeverity,
     LogAlertHandler,
 )
+from risk_churn_platform.monitoring.drift_detector import DriftDetector
+from risk_churn_platform.monitoring.outlier_detector import OutlierDetector
 
 
 @pytest.fixture

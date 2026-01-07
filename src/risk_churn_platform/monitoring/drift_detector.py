@@ -112,7 +112,7 @@ class DriftDetector:
         if "distance" in drift_result["data"]:
             distances = drift_result["data"]["distance"]
             if len(distances) == len(self.feature_names):
-                feature_drift = dict(zip(self.feature_names, distances.tolist()))
+                feature_drift = dict(zip(self.feature_names, distances.tolist(), strict=True))
 
         result = {
             "is_drift": is_drift,
