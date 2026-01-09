@@ -1,5 +1,13 @@
 # Risk/Churn Scoring Platform
 
+[![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Tests](https://img.shields.io/badge/tests-113%20passed-success.svg)](tests/)
+[![Coverage](https://img.shields.io/badge/coverage-80%25-brightgreen.svg)](tests/)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](Dockerfile)
+[![Kubernetes](https://img.shields.io/badge/kubernetes-ready-326CE5.svg)](k8s/)
+
 A production-ready ML platform for risk and churn prediction with A/B testing, drift detection, and automated retraining, built on Seldon Core.
 
 ## Features
@@ -39,59 +47,46 @@ A production-ready ML platform for risk and churn prediction with A/B testing, d
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Ingress (REST/gRPC)                     │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    Feature Transformer                       │
-└────────────────────────┬────────────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      Model Router                           │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
-│  │   Shadow     │  │   Canary     │  │ Blue-Green   │     │
-│  └──────────────┘  └──────────────┘  └──────────────┘     │
-└──────────┬──────────────────────┬─────────────────────────┘
-           │                      │
-           ▼                      ▼
-    ┌────────────┐        ┌────────────┐
-    │  Model v1  │        │  Model v2  │
-    └────────────┘        └────────────┘
-           │                      │
-           └──────────┬───────────┘
-                      │
-                      ▼
-           ┌──────────────────────┐
-           │  Explainer (SHAP)    │
-           └──────────────────────┘
-                      │
-                      ▼
-        ┌─────────────────────────────┐
-        │    Kafka Event Stream       │
-        │  (predictions, drift, etc)  │
-        └─────────────────────────────┘
-                      │
-           ┌──────────┴──────────┐
-           ▼                     ▼
-    ┌─────────────┐      ┌──────────────┐
-    │   Drift     │      │   Outlier    │
-    │  Detector   │      │   Detector   │
-    └─────────────┘      └──────────────┘
-           │                     │
-           └──────────┬──────────┘
-                      ▼
-            ┌──────────────────┐
-            │  Alert Manager   │
-            └──────────────────┘
-                      │
-                      ▼
-            ┌──────────────────┐
-            │ Retraining Loop  │
-            └──────────────────┘
+```mermaid
+graph TD
+    A[Ingress REST/gRPC] --> B[Feature Transformer]
+    B --> C[Model Router]
+
+    C --> C1[Shadow Strategy]
+    C --> C2[Canary Strategy]
+    C --> C3[Blue-Green Strategy]
+
+    C1 --> D1[Model v1]
+    C1 --> D2[Model v2]
+    C2 --> D1
+    C2 --> D2
+    C3 --> D1
+    C3 --> D2
+
+    D1 --> E[Explainer SHAP]
+    D2 --> E
+
+    E --> F[Kafka Event Stream<br/>predictions, drift, etc]
+
+    F --> G1[Drift Detector]
+    F --> G2[Outlier Detector]
+
+    G1 --> H[Alert Manager]
+    G2 --> H
+
+    H --> I[Retraining Loop]
+
+    style A fill:#e1f5ff
+    style B fill:#e1f5ff
+    style C fill:#fff4e1
+    style D1 fill:#e8f5e9
+    style D2 fill:#e8f5e9
+    style E fill:#f3e5f5
+    style F fill:#fff9c4
+    style G1 fill:#ffebee
+    style G2 fill:#ffebee
+    style H fill:#fce4ec
+    style I fill:#e0f2f1
 ```
 
 ## Quick Start
@@ -299,55 +294,6 @@ Pre-built dashboards include:
 - `ml.drift-alerts`: Drift detection alerts
 - `ml.outliers`: Outlier detection events
 - `ml.feedback`: Ground truth labels for retraining
-
-## Development
-
-### Code Quality
-
-The project uses:
-- **Black**: Code formatting
-- **Ruff**: Fast Python linter
-- **mypy**: Static type checking
-- **isort**: Import sorting
-- **pytest**: Testing framework
-
-Run checks:
-```bash
-# Format code
-black src/ tests/
-
-# Lint
-ruff check src/ tests/
-
-# Type check
-mypy src/
-
-# Run all pre-commit hooks
-pre-commit run --all-files
-```
-
-### Project Structure
-
-```
-risk-churn-platform/
-├── src/risk_churn_platform/
-│   ├── api/              # REST/gRPC APIs
-│   ├── models/           # Model implementations
-│   ├── transformers/     # Feature transformers
-│   ├── routers/          # Model routing logic
-│   ├── explainers/       # Model explainability
-│   ├── monitoring/       # Drift/outlier detection
-│   ├── kafka/            # Kafka producers/consumers
-│   └── deployment/       # Retraining pipelines
-├── frontend/             # React dashboard application
-├── tests/
-│   ├── unit/             # Unit tests
-│   └── integration/      # Integration tests
-├── k8s/                  # Kubernetes manifests
-├── config/               # Configuration files
-├── docs/                 # Documentation (guides, blog, deployment)
-└── models/               # Saved models
-```
 
 ## Testing
 

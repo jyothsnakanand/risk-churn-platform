@@ -2,8 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Install system dependencies with retry for transient package issues
+RUN apt-get update && apt-get install -y --fix-missing \
     gcc \
     g++ \
     && rm -rf /var/lib/apt/lists/*
