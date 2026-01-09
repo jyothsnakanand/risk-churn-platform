@@ -2,24 +2,26 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies with retry for transient package issues
-RUN apt-get update && apt-get install -y --fix-missing \
+# Install system dependencies with retry mechanism for transient package issues
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
     gcc \
     g++ \
-    && rm -rf /var/lib/apt/lists/*
+    || (sleep 5 && apt-get clean && apt-get update && apt-get install -y --no-install-recommends gcc g++) && \
+    rm -rf /var/lib/apt/lists/*
 
-# Copy dependency files
-COPY pyproject.toml ./
+# Copy dependency files and source code
+COPY pyproject.toml README.md ./
+COPY src/ ./src/
+COPY config/ ./config/
 
 # Install uv for faster dependency installation
 RUN pip install uv
 
 # Install dependencies
 RUN uv pip install --system -e .
-
-# Copy application code
-COPY src/ ./src/
-COPY config/ ./config/
 
 # Create models directory
 RUN mkdir -p models/v1 models/v2
