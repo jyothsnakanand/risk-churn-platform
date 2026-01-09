@@ -58,7 +58,7 @@ services:
   api:
     build: .
     ports:
-      - "8080:8080"
+      - "8000:8000"
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       REDIS_HOST: redis
@@ -73,7 +73,16 @@ services:
     command: >
       sh -c "sleep 10 &&
              uvicorn src.risk_churn_platform.api.rest_api:app
-             --host 0.0.0.0 --port 8080 --reload"
+             --host 0.0.0.0 --port 8000 --reload"
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - api
 
 volumes:
   zookeeper-data:

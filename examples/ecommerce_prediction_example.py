@@ -83,13 +83,13 @@ def main():
     result = predict_churn(high_risk_customer)
 
     print(f"\nPrediction Result:")
-    print(f"  ⚠️  Churn Risk Score: {result['risk_score']:.1f}%")
-    print(f"  📊 Churn Probability: {result['churn_probability']:.1%}")
-    print(f"  🤖 Model Version: {result['model_version']}")
-    print(f"  ⚡ Latency: {result['latency_ms']:.2f}ms")
+    print(f"  Churn Risk Score: {result['risk_score']:.1f}%")
+    print(f"  Churn Probability: {result['churn_probability']:.1%}")
+    print(f"  Model Version: {result['model_version']}")
+    print(f"  Latency: {result['latency_ms']:.2f}ms")
 
     if result['risk_score'] > 70:
-        print(f"\n  🚨 HIGH RISK - Immediate intervention needed!")
+        print(f"\n  [HIGH RISK] Immediate intervention needed!")
         print(f"     Recommended actions:")
         print(f"     - Send personalized win-back campaign")
         print(f"     - Offer special discount or loyalty bonus")
@@ -146,13 +146,13 @@ def main():
     result = predict_churn(low_risk_customer)
 
     print(f"\nPrediction Result:")
-    print(f"  ✅ Churn Risk Score: {result['risk_score']:.1f}%")
-    print(f"  📊 Churn Probability: {result['churn_probability']:.1%}")
-    print(f"  🤖 Model Version: {result['model_version']}")
-    print(f"  ⚡ Latency: {result['latency_ms']:.2f}ms")
+    print(f"  Churn Risk Score: {result['risk_score']:.1f}%")
+    print(f"  Churn Probability: {result['churn_probability']:.1%}")
+    print(f"  Model Version: {result['model_version']}")
+    print(f"  Latency: {result['latency_ms']:.2f}ms")
 
     if result['risk_score'] < 30:
-        print(f"\n  ✅ LOW RISK - Customer is engaged and loyal!")
+        print(f"\n  [LOW RISK] Customer is engaged and loyal!")
         print(f"     Recommended actions:")
         print(f"     - Maintain regular communication")
         print(f"     - Offer VIP/loyalty program")
@@ -196,12 +196,12 @@ def main():
     result = predict_churn(medium_risk_customer)
 
     print(f"\nPrediction Result:")
-    print(f"  ⚡ Churn Risk Score: {result['risk_score']:.1f}%")
-    print(f"  📊 Churn Probability: {result['churn_probability']:.1%}")
-    print(f"  🤖 Model Version: {result['model_version']}")
+    print(f"  Churn Risk Score: {result['risk_score']:.1f}%")
+    print(f"  Churn Probability: {result['churn_probability']:.1%}")
+    print(f"  Model Version: {result['model_version']}")
 
     if 30 <= result['risk_score'] <= 70:
-        print(f"\n  ⚠️  MEDIUM RISK - Preventive action recommended")
+        print(f"\n  [MEDIUM RISK] Preventive action recommended")
         print(f"     Recommended actions:")
         print(f"     - Send re-engagement email campaign")
         print(f"     - Offer targeted discount on favorite category")
@@ -218,8 +218,8 @@ if __name__ == "__main__":
     try:
         main()
     except requests.exceptions.ConnectionError:
-        print("\n❌ ERROR: Could not connect to API server")
+        print("\n[ERROR] Could not connect to API server")
         print("Please ensure the API server is running:")
         print("  uvicorn src.risk_churn_platform.api.rest_api:app --reload")
     except Exception as e:
-        print(f"\n❌ ERROR: {e}")
+        print(f"\n[ERROR] {e}")

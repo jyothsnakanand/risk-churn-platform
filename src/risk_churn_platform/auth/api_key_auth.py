@@ -53,7 +53,7 @@ class APIKeyManager:
         )
 
         logger.info("default_api_key_created", key=default_key)
-        print(f"\n🔑 Default API Key: {default_key}")
+        print(f"\n[API KEY] Default API Key: {default_key}")
         print("   Save this key securely - it won't be shown again!\n")
 
     def create_key(

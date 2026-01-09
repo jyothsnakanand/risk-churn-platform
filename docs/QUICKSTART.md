@@ -42,11 +42,11 @@ docker-compose ps
 ```
 
 You should see:
-- ✅ Kafka (port 9092)
-- ✅ Zookeeper (port 2181)
-- ✅ Redis (port 6379)
-- ✅ Prometheus (port 9090)
-- ✅ Grafana (port 3000)
+- [OK] Kafka (port 9092)
+- [OK] Zookeeper (port 2181)
+- [OK] Redis (port 6379)
+- [OK] Prometheus (port 9090)
+- [OK] Grafana (port 3000)
 
 ## Step 3: Create & Train Models (1 minute)
 
@@ -110,7 +110,7 @@ y_pred_v2 = model_v2.predict(X_test_transformed)
 
 print(f"\nModel V1 - Accuracy: {accuracy_score(y_test, y_pred_v1):.3f}, F1: {f1_score(y_test, y_pred_v1):.3f}")
 print(f"Model V2 - Accuracy: {accuracy_score(y_test, y_pred_v2):.3f}, F1: {f1_score(y_test, y_pred_v2):.3f}")
-print("\n✅ Models trained and saved successfully!")
+print("\n[OK] Models trained and saved successfully!")
 ```
 
 Run it:
@@ -199,18 +199,18 @@ python test_prediction.py
 }
 ```
 
-🎉 **Congratulations!** Your prediction platform is running!
+ **Congratulations!** Your prediction platform is running!
 
 ---
 
 ## What's Happening Behind the Scenes?
 
 The platform is now running in **Shadow Mode**:
-- ✅ Model V1 serves predictions to users
-- ✅ Model V2 runs in parallel (not visible to users)
-- ✅ Both predictions are logged for comparison
-- ✅ Kafka is recording all events
-- ✅ Drift detection is monitoring data quality
+- [OK] Model V1 serves predictions to users
+- [OK] Model V2 runs in parallel (not visible to users)
+- [OK] Both predictions are logged for comparison
+- [OK] Kafka is recording all events
+- [OK] Drift detection is monitoring data quality
 
 ## Quick Monitoring Checks
 
@@ -402,7 +402,7 @@ if analysis.get('comparison_count', 0) > 0:
     print(f"   Comparisons: {analysis['comparison_count']}")
     print(f"   Avg Prediction Diff: {analysis['avg_prediction_diff']:.4f}")
 
-print("\n✅ All systems operational!")
+print("\n[OK] All systems operational!")
 ```
 
 ---
@@ -421,4 +421,4 @@ print("\n✅ All systems operational!")
 
 ---
 
-**You're all set!** 🚀 The platform is running with production-grade monitoring, A/B testing, and automated quality checks.
+**You're all set!**  The platform is running with production-grade monitoring, A/B testing, and automated quality checks.

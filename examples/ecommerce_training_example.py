@@ -178,13 +178,13 @@ def main():
     print(f"    ROC AUC:   {roc_auc_score(y_val, y_val_proba_v1):.3f}")
 
     model_v1.save('models/v1/model.pkl')
-    print(f"  ✓ Model V1 saved to models/v1/model.pkl")
+    print(f"  [OK] Model V1 saved to models/v1/model.pkl")
 
     # Save transformer
     import pickle
     with open('models/transformer.pkl', 'wb') as f:
         pickle.dump(transformer, f)
-    print(f"  ✓ Transformer saved to models/transformer.pkl")
+    print(f"  [OK] Transformer saved to models/transformer.pkl")
 
     # Train Model V2 (Gradient Boosting)
     print("\n[5/5] Training Model V2 (Gradient Boosting)...")
@@ -203,7 +203,7 @@ def main():
     print(f"    ROC AUC:   {roc_auc_score(y_val, y_val_proba_v2):.3f}")
 
     model_v2.save('models/v2/model.pkl')
-    print(f"  ✓ Model V2 saved to models/v2/model.pkl")
+    print(f"  [OK] Model V2 saved to models/v2/model.pkl")
 
     # Test set evaluation
     print("\n" + "=" * 70)
@@ -227,7 +227,7 @@ def main():
     print(f"  ROC AUC:   {roc_auc_score(y_test, y_test_proba_v2):.3f}")
 
     print("\n" + "=" * 70)
-    print("✓ TRAINING COMPLETE")
+    print("TRAINING COMPLETE")
     print("=" * 70)
     print("\nNext steps:")
     print("1. Start the API server: uvicorn src.risk_churn_platform.api.rest_api:app --reload")

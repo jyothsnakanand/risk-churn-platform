@@ -1,0 +1,230 @@
+.monitoring-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Health Overview */
+.health-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.health-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.health-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.health-info {
+  flex: 1;
+}
+
+.health-label {
+  font-size: 13px;
+  color: #718096;
+  margin-bottom: 4px;
+}
+
+.health-status {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+/* Tabs */
+.monitoring-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  background: white;
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #718096;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover {
+  background: #f7fafc;
+  color: #2d3748;
+}
+
+.tab-btn.active {
+  background: #4299e1;
+  color: white;
+}
+
+/* Tab Content */
+.tab-content {
+  min-height: 400px;
+}
+
+/* Drift Tab */
+.drift-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.chart-container {
+  height: 300px;
+  padding: 16px 0;
+}
+
+.chart-container-large {
+  height: 400px;
+  padding: 16px 0;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #4a5568;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.severity-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* Performance Tab */
+.performance-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.metric-box {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.metric-box .metric-label {
+  font-size: 13px;
+  color: #718096;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.metric-box .metric-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+/* Outliers Tab */
+.outliers-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.outlier-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  padding: 24px 0;
+}
+
+.outlier-stat {
+  text-align: center;
+}
+
+.outlier-label {
+  font-size: 13px;
+  color: #718096;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.outlier-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #2d3748;
+}
+
+code {
+  background-color: #edf2f7;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 13px;
+  color: #d53f8c;
+  font-family: 'Courier New', monospace;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .health-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .monitoring-tabs {
+    flex-direction: column;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .outlier-summary {
+    grid-template-columns: 1fr;
+  }
+}

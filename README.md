@@ -4,6 +4,14 @@ A production-ready ML platform for risk and churn prediction with A/B testing, d
 
 ## Features
 
+### Interactive Web Dashboard
+- **Real-time Monitoring**: Live metrics, health status, and system performance
+- **Drift Detection UI**: Visual feature drift analysis with p-value tracking
+- **Prediction Testing**: Interactive interface to test churn predictions
+- **Model Management**: Deploy, promote, and rollback models with one click
+- **Analytics Dashboard**: Customer segments, feature importance, and insights
+- **Responsive Design**: Works on desktop, tablet, and mobile
+
 ### Core Capabilities
 - **Multi-Model Deployment**: Support for multiple model versions (v1, v2) with intelligent routing
 - **REST & gRPC APIs**: V2 protocol support for high-performance inference
@@ -88,6 +96,12 @@ A production-ready ML platform for risk and churn prediction with A/B testing, d
 
 ## Quick Start
 
+**For detailed guides, see the [docs](docs/) folder:**
+- [Quick Start Guide](docs/QUICK_START.md) - Get running in 5 minutes
+- [Deployment Guide](docs/DEPLOYMENT.md) - Complete deployment instructions
+- [Dashboard Guide](docs/DASHBOARD_GUIDE.md) - Web UI user manual
+- [Blog Post](docs/BLOG_POST.md) - Project story and technical deep dive
+
 ### Prerequisites
 - Python 3.11+
 - Docker & Docker Compose
@@ -117,12 +131,14 @@ uv pip install -e ".[dev]"
 pre-commit install
 ```
 
-4. **Start infrastructure with Docker Compose**:
+4. **Start full platform with Docker Compose**:
 ```bash
 docker-compose up -d
 ```
 
 This starts:
+- **Frontend Dashboard** (http://localhost)
+- **Backend API** (http://localhost:8000)
 - Kafka & Zookeeper
 - Redis
 - Prometheus & Grafana
@@ -323,12 +339,13 @@ risk-churn-platform/
 │   ├── monitoring/       # Drift/outlier detection
 │   ├── kafka/            # Kafka producers/consumers
 │   └── deployment/       # Retraining pipelines
+├── frontend/             # React dashboard application
 ├── tests/
 │   ├── unit/             # Unit tests
 │   └── integration/      # Integration tests
 ├── k8s/                  # Kubernetes manifests
 ├── config/               # Configuration files
-├── docs/                 # Additional documentation
+├── docs/                 # Documentation (guides, blog, deployment)
 └── models/               # Saved models
 ```
 
