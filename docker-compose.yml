@@ -23,6 +23,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
     volumes:
       - kafka-data:/var/lib/kafka/data
 
@@ -64,16 +65,15 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       LOG_LEVEL: INFO
+      UVICORN_HOST: 0.0.0.0
+      UVICORN_PORT: 8000
     volumes:
       - ./models:/app/models
       - ./config:/app/config
     depends_on:
       - kafka
       - redis
-    command: >
-      sh -c "sleep 10 &&
-             uvicorn src.risk_churn_platform.api.rest_api:app
-             --host 0.0.0.0 --port 8000 --reload"
+    command: ["sh", "-c", "sleep 10 && uvicorn src.risk_churn_platform.api.rest_api:app --host $$UVICORN_HOST --port $$UVICORN_PORT"]
 
   frontend:
     build: ./frontend
