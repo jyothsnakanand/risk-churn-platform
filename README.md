@@ -147,34 +147,60 @@ pytest tests/ -v --cov=src
 ### Making Predictions
 
 ```bash
-curl -X POST http://localhost:8080/predict \
+curl -X POST http://localhost:8000/predict \
   -H "Content-Type: application/json" \
   -d '{
-    "customer_tenure": 24,
-    "monthly_charges": 79.99,
-    "total_charges": 1919.76,
-    "contract_type": "Two year",
-    "payment_method": "Credit card",
-    "internet_service": "Fiber optic",
-    "support_tickets": 2,
-    "login_frequency": 5.2
+    "customer_age_days": 730,
+    "account_age_days": 365,
+    "total_orders": 15,
+    "total_revenue": 1250.50,
+    "avg_order_value": 83.37,
+    "days_since_last_order": 45,
+    "order_frequency": 0.5,
+    "website_visits_30d": 8,
+    "email_open_rate": 0.35,
+    "cart_abandonment_rate": 0.45,
+    "product_views_30d": 25,
+    "support_tickets_total": 2,
+    "support_tickets_open": 0,
+    "returns_count": 1,
+    "refunds_count": 0,
+    "favorite_category": "Electronics",
+    "discount_usage_rate": 0.40,
+    "premium_product_rate": 0.25,
+    "payment_method": "Credit Card",
+    "shipping_method": "Standard",
+    "failed_payment_count": 0
   }'
 ```
 
 ### Get Explanation
 
 ```bash
-curl -X POST http://localhost:8080/explain \
+curl -X POST http://localhost:8000/explain \
   -H "Content-Type: application/json" \
   -d '{
-    "customer_tenure": 24,
-    "monthly_charges": 79.99,
-    "total_charges": 1919.76,
-    "contract_type": "Two year",
-    "payment_method": "Credit card",
-    "internet_service": "Fiber optic",
-    "support_tickets": 2,
-    "login_frequency": 5.2
+    "customer_age_days": 730,
+    "account_age_days": 365,
+    "total_orders": 15,
+    "total_revenue": 1250.50,
+    "avg_order_value": 83.37,
+    "days_since_last_order": 45,
+    "order_frequency": 0.5,
+    "website_visits_30d": 8,
+    "email_open_rate": 0.35,
+    "cart_abandonment_rate": 0.45,
+    "product_views_30d": 25,
+    "support_tickets_total": 2,
+    "support_tickets_open": 0,
+    "returns_count": 1,
+    "refunds_count": 0,
+    "favorite_category": "Electronics",
+    "discount_usage_rate": 0.40,
+    "premium_product_rate": 0.25,
+    "payment_method": "Credit Card",
+    "shipping_method": "Standard",
+    "failed_payment_count": 0
   }'
 ```
 
@@ -220,7 +246,7 @@ kubectl apply -f k8s/drift-detector-deployment.yaml
 
 ```bash
 # Check shadow analysis
-curl http://localhost:8080/router/shadow-analysis
+curl http://localhost:8000/router/shadow-analysis
 ```
 
 #### Phase 2: Canary Release (Week 3-4)
@@ -230,19 +256,19 @@ curl http://localhost:8080/router/shadow-analysis
 
 ```bash
 # Current metrics
-curl http://localhost:8080/router/metrics
+curl http://localhost:8000/router/metrics
 ```
 
 #### Phase 3: Full Rollout
 - If all metrics are good, promote v2 to 100%
 
 ```bash
-curl -X POST http://localhost:8080/router/promote-v2
+curl -X POST http://localhost:8000/router/promote-v2
 ```
 
 #### Emergency Rollback
 ```bash
-curl -X POST http://localhost:8080/router/rollback
+curl -X POST http://localhost:8000/router/rollback
 ```
 
 ## Configuration
@@ -327,8 +353,8 @@ The platform supports automated retraining:
 ## API Documentation
 
 Once running, visit:
-- Swagger UI: `http://localhost:8080/docs`
-- ReDoc: `http://localhost:8080/redoc`
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
 
 ## Contributing
 

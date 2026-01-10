@@ -233,7 +233,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Model Comparison */}
-      {shadowAnalysis && (
+      {shadowAnalysis && shadowAnalysis.total_comparisons !== undefined && (
         <div className="comparison-section">
           <h3 className="section-title">Shadow Deployment Analysis</h3>
           <div className="card">
