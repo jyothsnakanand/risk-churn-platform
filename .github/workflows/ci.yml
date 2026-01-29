@@ -192,7 +192,7 @@ jobs:
     name: Build Docker Image
     runs-on: ubuntu-latest
     needs: [lint, test]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: false  # Disabled - configure DOCKER_USERNAME and DOCKER_PASSWORD secrets to enable
     steps:
       - uses: actions/checkout@v4
 
@@ -228,7 +228,7 @@ jobs:
     name: Deploy to Staging
     runs-on: ubuntu-latest
     needs: [build]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: false  # Disabled - configure KUBE_CONFIG_STAGING secret to enable
     environment:
       name: staging
       url: https://staging.ml-platform.example.com
@@ -265,7 +265,7 @@ jobs:
     name: Deploy to Production
     runs-on: ubuntu-latest
     needs: [deploy-staging]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: false  # Disabled - configure KUBE_CONFIG_PRODUCTION secret to enable
     environment:
       name: production
       url: https://api.ml-platform.example.com
@@ -300,6 +300,7 @@ jobs:
           done
 
       - name: Send notification
+        if: false  # Disabled - configure SLACK_WEBHOOK secret to enable
         uses: slackapi/slack-github-action@v1
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK }}
@@ -320,8 +321,8 @@ jobs:
   notify-failure:
     name: Notify on Failure
     runs-on: ubuntu-latest
-    needs: [lint, test, integration-test, security, build]
-    if: failure()
+    needs: [lint, test, integration-test, security]
+    if: false  # Disabled - configure SLACK_WEBHOOK secret to enable
     steps:
       - name: Send Slack notification
         uses: slackapi/slack-github-action@v1
