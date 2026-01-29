@@ -5,6 +5,7 @@ using e-commerce customer data.
 """
 
 import os
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -98,7 +99,7 @@ def generate_ecommerce_data(n_samples: int = 10000) -> pd.DataFrame:
 
     print(f"\nGenerated {n_samples} e-commerce customer records")
     print(f"Churn rate: {df['label'].mean():.2%}")
-    print(f"\nFeature summary:")
+    print("\nFeature summary:")
     print(f"  - Avg customer age: {df['customer_age_days'].mean():.0f} days ({df['customer_age_days'].mean()/365:.1f} years)")
     print(f"  - Avg total orders: {df['total_orders'].mean():.1f}")
     print(f"  - Avg lifetime value: ${df['total_revenue'].mean():.2f}")
@@ -165,12 +166,18 @@ def main():
     model_v1.train(X_train_transformed, y_train.values, n_estimators=100, max_depth=10)
 
     # Evaluate V1
-    from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
+    from sklearn.metrics import (
+        accuracy_score,
+        f1_score,
+        precision_score,
+        recall_score,
+        roc_auc_score,
+    )
 
     y_val_pred_v1 = model_v1.predict(X_val_transformed)
     y_val_proba_v1 = model_v1.predict_proba(X_val_transformed)[:, 1]
 
-    print(f"\n  Model V1 Performance (Validation Set):")
+    print("\n  Model V1 Performance (Validation Set):")
     print(f"    Accuracy:  {accuracy_score(y_val, y_val_pred_v1):.3f}")
     print(f"    Precision: {precision_score(y_val, y_val_pred_v1):.3f}")
     print(f"    Recall:    {recall_score(y_val, y_val_pred_v1):.3f}")
@@ -178,13 +185,13 @@ def main():
     print(f"    ROC AUC:   {roc_auc_score(y_val, y_val_proba_v1):.3f}")
 
     model_v1.save('models/v1/model.pkl')
-    print(f"  [OK] Model V1 saved to models/v1/model.pkl")
+    print("  [OK] Model V1 saved to models/v1/model.pkl")
 
     # Save transformer
     import pickle
     with open('models/transformer.pkl', 'wb') as f:
         pickle.dump(transformer, f)
-    print(f"  [OK] Transformer saved to models/transformer.pkl")
+    print("  [OK] Transformer saved to models/transformer.pkl")
 
     # Train Model V2 (Gradient Boosting)
     print("\n[5/5] Training Model V2 (Gradient Boosting)...")
@@ -195,7 +202,7 @@ def main():
     y_val_pred_v2 = model_v2.predict(X_val_transformed)
     y_val_proba_v2 = model_v2.predict_proba(X_val_transformed)[:, 1]
 
-    print(f"\n  Model V2 Performance (Validation Set):")
+    print("\n  Model V2 Performance (Validation Set):")
     print(f"    Accuracy:  {accuracy_score(y_val, y_val_pred_v2):.3f}")
     print(f"    Precision: {precision_score(y_val, y_val_pred_v2):.3f}")
     print(f"    Recall:    {recall_score(y_val, y_val_pred_v2):.3f}")
@@ -203,7 +210,7 @@ def main():
     print(f"    ROC AUC:   {roc_auc_score(y_val, y_val_proba_v2):.3f}")
 
     model_v2.save('models/v2/model.pkl')
-    print(f"  [OK] Model V2 saved to models/v2/model.pkl")
+    print("  [OK] Model V2 saved to models/v2/model.pkl")
 
     # Test set evaluation
     print("\n" + "=" * 70)
@@ -216,12 +223,12 @@ def main():
     y_test_pred_v2 = model_v2.predict(X_test_transformed)
     y_test_proba_v2 = model_v2.predict_proba(X_test_transformed)[:, 1]
 
-    print(f"\nModel V1 (Random Forest) - Test Set:")
+    print("\nModel V1 (Random Forest) - Test Set:")
     print(f"  Accuracy:  {accuracy_score(y_test, y_test_pred_v1):.3f}")
     print(f"  F1 Score:  {f1_score(y_test, y_test_pred_v1):.3f}")
     print(f"  ROC AUC:   {roc_auc_score(y_test, y_test_proba_v1):.3f}")
 
-    print(f"\nModel V2 (Gradient Boosting) - Test Set:")
+    print("\nModel V2 (Gradient Boosting) - Test Set:")
     print(f"  Accuracy:  {accuracy_score(y_test, y_test_pred_v2):.3f}")
     print(f"  F1 Score:  {f1_score(y_test, y_test_pred_v2):.3f}")
     print(f"  ROC AUC:   {roc_auc_score(y_test, y_test_proba_v2):.3f}")

@@ -97,3 +97,8 @@ Thumbs.db
 
 # uv
 .uv/
+
+# E-commerce dataset (large files)
+data/ecommerce/*.csv
+data/ecommerce/processed_*.csv
+ecommerce-dataset.zip

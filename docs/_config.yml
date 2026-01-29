@@ -1,0 +1,22 @@
+title: Risk/Churn Scoring Platform
+description: Production-ready ML platform for risk and churn prediction with A/B testing, drift detection, and automated retraining
+theme: jekyll-theme-cayman
+github:
+  repository_url: https://github.com/jyothsnakanand/risk-churn-platform
+
+show_downloads: true
+
+plugins:
+  - jekyll-relative-links
+
+relative_links:
+  enabled: true
+  collections: true
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+aux_links:
+  "View on GitHub": "https://github.com/jyothsnakanand/risk-churn-platform"

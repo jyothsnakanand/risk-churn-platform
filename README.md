@@ -95,6 +95,8 @@ graph TD
 - [Quick Start Guide](docs/QUICK_START.md) - Get running in 5 minutes
 - [Deployment Guide](docs/DEPLOYMENT.md) - Complete deployment instructions
 - [Dashboard Guide](docs/DASHBOARD_GUIDE.md) - Web UI user manual
+- [Data Generator Guide](docs/DATA_GENERATOR.md) - Synthetic data generation
+- [Real Data Integration](docs/REAL_DATA_INTEGRATION.md) - Using real e-commerce dataset
 - [Blog Post](docs/BLOG_POST.md) - Project story and technical deep dive
 
 ### Prerequisites

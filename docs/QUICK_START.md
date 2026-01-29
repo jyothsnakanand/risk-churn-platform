@@ -1,6 +1,14 @@
+---
+layout: default
+title: Quick Start Guide
+nav_order: 1
+---
+
 # Quick Start Guide
+{: .no_toc }
 
 Get the Risk Churn Platform running in under 5 minutes!
+{: .fs-6 .fw-300 }
 
 ## Prerequisites
 
@@ -185,7 +193,7 @@ docker-compose up -d --build
 -  Tips: All guides in repository root
 -  Troubleshooting: See `DEPLOYMENT.md`
 
-## Success! 
+## Success!
 
 You now have a fully functional ML platform with:
 - [OK] Interactive web dashboard
@@ -194,4 +202,4 @@ You now have a fully functional ML platform with:
 - [OK] Analytics & insights
 - [OK] Production-ready deployment
 
-Happy predicting! 
+Happy predicting!

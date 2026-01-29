@@ -1,0 +1,23 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc g++ && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY pyproject.toml README.md ./
+COPY src/ ./src/
+COPY scripts/ ./scripts/
+
+# Install uv and dependencies
+RUN pip install uv && \
+    uv pip install --system -e .
+
+# Make script executable
+RUN chmod +x /app/scripts/generate_synthetic_data.py
+
+# Default command (can be overridden)
+CMD ["python", "/app/scripts/generate_synthetic_data.py", "stream", "--rate", "30", "--duration", "60"]

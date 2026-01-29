@@ -3,8 +3,8 @@
 This script demonstrates how to make churn predictions for e-commerce customers.
 """
 
+
 import requests
-import json
 
 
 def predict_churn(customer_data: dict) -> dict:
@@ -82,19 +82,19 @@ def main():
 
     result = predict_churn(high_risk_customer)
 
-    print(f"\nPrediction Result:")
+    print("\nPrediction Result:")
     print(f"  Churn Risk Score: {result['risk_score']:.1f}%")
     print(f"  Churn Probability: {result['churn_probability']:.1%}")
     print(f"  Model Version: {result['model_version']}")
     print(f"  Latency: {result['latency_ms']:.2f}ms")
 
     if result['risk_score'] > 70:
-        print(f"\n  [HIGH RISK] Immediate intervention needed!")
-        print(f"     Recommended actions:")
-        print(f"     - Send personalized win-back campaign")
-        print(f"     - Offer special discount or loyalty bonus")
-        print(f"     - Resolve open support tickets")
-        print(f"     - Contact customer directly")
+        print("\n  [HIGH RISK] Immediate intervention needed!")
+        print("     Recommended actions:")
+        print("     - Send personalized win-back campaign")
+        print("     - Offer special discount or loyalty bonus")
+        print("     - Resolve open support tickets")
+        print("     - Contact customer directly")
 
     # Example 2: Low-risk customer (engaged and loyal)
     print("\n\n[Example 2] Low-Risk Customer Profile")
@@ -145,19 +145,19 @@ def main():
 
     result = predict_churn(low_risk_customer)
 
-    print(f"\nPrediction Result:")
+    print("\nPrediction Result:")
     print(f"  Churn Risk Score: {result['risk_score']:.1f}%")
     print(f"  Churn Probability: {result['churn_probability']:.1%}")
     print(f"  Model Version: {result['model_version']}")
     print(f"  Latency: {result['latency_ms']:.2f}ms")
 
     if result['risk_score'] < 30:
-        print(f"\n  [LOW RISK] Customer is engaged and loyal!")
-        print(f"     Recommended actions:")
-        print(f"     - Maintain regular communication")
-        print(f"     - Offer VIP/loyalty program")
-        print(f"     - Request reviews and referrals")
-        print(f"     - Provide early access to new products")
+        print("\n  [LOW RISK] Customer is engaged and loyal!")
+        print("     Recommended actions:")
+        print("     - Maintain regular communication")
+        print("     - Offer VIP/loyalty program")
+        print("     - Request reviews and referrals")
+        print("     - Provide early access to new products")
 
     # Example 3: Medium-risk customer
     print("\n\n[Example 3] Medium-Risk Customer Profile")
@@ -195,18 +195,18 @@ def main():
 
     result = predict_churn(medium_risk_customer)
 
-    print(f"\nPrediction Result:")
+    print("\nPrediction Result:")
     print(f"  Churn Risk Score: {result['risk_score']:.1f}%")
     print(f"  Churn Probability: {result['churn_probability']:.1%}")
     print(f"  Model Version: {result['model_version']}")
 
     if 30 <= result['risk_score'] <= 70:
-        print(f"\n  [MEDIUM RISK] Preventive action recommended")
-        print(f"     Recommended actions:")
-        print(f"     - Send re-engagement email campaign")
-        print(f"     - Offer targeted discount on favorite category")
-        print(f"     - Resolve open support ticket")
-        print(f"     - Improve email content relevance")
+        print("\n  [MEDIUM RISK] Preventive action recommended")
+        print("     Recommended actions:")
+        print("     - Send re-engagement email campaign")
+        print("     - Offer targeted discount on favorite category")
+        print("     - Resolve open support ticket")
+        print("     - Improve email content relevance")
 
     print("\n" + "=" * 70)
     print("PREDICTION EXAMPLES COMPLETE")
