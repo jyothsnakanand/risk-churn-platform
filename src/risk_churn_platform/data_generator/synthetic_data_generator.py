@@ -41,7 +41,7 @@ class SyntheticDataGenerator:
         self.drift_factor = 0.0  # 0 to 1, controls how much drift to apply
         self.drift_direction = 1  # 1 for increasing, -1 for decreasing
 
-    def set_drift(self, factor: float, direction: int = 1):
+    def set_drift(self, factor: float, direction: int = 1) -> None:
         """
         Set the drift factor and direction.
 

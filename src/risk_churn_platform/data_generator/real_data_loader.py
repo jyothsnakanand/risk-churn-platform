@@ -28,9 +28,9 @@ class EcommerceDataLoader:
             data_dir: Directory containing the dataset files
         """
         self.data_dir = Path(data_dir)
-        self.events_df = None
-        self.categories_df = None
-        self.items_df = None
+        self.events_df: pd.DataFrame | None = None
+        self.categories_df: pd.DataFrame | None = None
+        self.items_df: pd.DataFrame | None = None
 
     def load_events(self, sample_size: int | None = None) -> pd.DataFrame:
         """
@@ -45,6 +45,7 @@ class EcommerceDataLoader:
         logger.info("Loading events data...")
         events_path = self.data_dir / "events.csv"
 
+        events_df: pd.DataFrame
         if sample_size:
             # Read in chunks and sample
             chunk_size = 100000
@@ -224,7 +225,7 @@ class EcommerceDataLoader:
 
         return customers
 
-    def _print_dataset_stats(self, df: pd.DataFrame):
+    def _print_dataset_stats(self, df: pd.DataFrame) -> None:
         """Print dataset statistics."""
         logger.info("\nDataset Statistics:")
         logger.info(f"  Total customers: {len(df):,}")
@@ -254,15 +255,15 @@ def get_sample_customer(customer_id: str | None = None) -> dict:
     processed_path = Path("data/ecommerce/processed_customers.csv")
 
     if processed_path.exists():
-        df = pd.read_csv(processed_path)
+        df: pd.DataFrame = pd.read_csv(processed_path)
         if customer_id:
             customer = df[df["customer_id"] == customer_id]
             if len(customer) == 0:
                 raise ValueError(f"Customer {customer_id} not found")
-            return customer.iloc[0].to_dict()
+            return dict(customer.iloc[0].to_dict())
         else:
             # Return random customer
-            return df.sample(1).iloc[0].to_dict()
+            return dict(df.sample(1).iloc[0].to_dict())
     else:
         raise FileNotFoundError(
             "Processed customer data not found. "

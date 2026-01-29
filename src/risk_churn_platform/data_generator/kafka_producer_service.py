@@ -101,7 +101,7 @@ class KafkaProducerService:
         duration_minutes: int | None = None,
         risk_distribution: dict[str, float] | None = None,
         drift_progression: bool = False,
-    ):
+    ) -> None:
         """
         Stream customers continuously to Kafka.
 
@@ -154,7 +154,7 @@ class KafkaProducerService:
 
     def simulate_lifecycle_stream(
         self, num_customers: int = 10, days_per_customer: int = 180, speed_factor: int = 60
-    ):
+    ) -> None:
         """
         Simulate multiple customer lifecycles showing risk progression.
 
@@ -186,7 +186,7 @@ class KafkaProducerService:
         )
         self.close()
 
-    def generate_drift_scenario(self, duration_minutes: int = 30):
+    def generate_drift_scenario(self, duration_minutes: int = 30) -> None:
         """
         Generate data showing gradual drift over time.
 
@@ -237,7 +237,7 @@ class KafkaProducerService:
         logger.info(f"Drift scenario complete. Total customers: {count}")
         self.close()
 
-    def close(self):
+    def close(self) -> None:
         """Close the Kafka producer."""
         if self.producer:
             self.producer.flush()
